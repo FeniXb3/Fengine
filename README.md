@@ -1,2 +1,2 @@
 # Fengine
-Backup repo for a small "engine" i work on in microStudio
+Backup repo for a small "engine" I work on in microStudio
