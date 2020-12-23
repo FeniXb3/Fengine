@@ -10,6 +10,10 @@ GameObject = class extends BaseEntity
     this.onUpdate = onUpdate
   end
   
+  setEnabled = function(value)
+    this.enabled = value
+  end
+  
   addSprite = function(spriteName)
     if sprites[spriteName] then
       this.renderable = new Sprite(spriteName)

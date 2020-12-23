@@ -16,23 +16,22 @@ initGameFingerprint = function(engine)
   
   fingerprint = engine.addGameObject("fingerprint")
   fingerprint.addSprite("fingerprint").withAlpha(0.1)
-  fingerprint.addTouchableOnSprite(function() global.won = true end)
+  fingerprint.addTouchableOnSprite(function() 
+    Fengine.getInstance().eventManager.triggerEvent("won", true)
+  end)
   
   local itemIndex = random.nextInt(items.length)
   items[itemIndex].addChild(fingerprint)
   
-  winText = prepareWinText()
+  winText = prepareWinText(engine)
 end
 
-prepareWinText = function()
+prepareWinText = function(engine)
   local text = engine.addGameObject("winText")
   text.addText("You win!", 30, "grey", "VeniceClassic")
   text.enabled = false
-  text.enableChangeAction = function()
-    if global.won then
-      winText.enabled = true
-    end
-  end
+  
+  engine.eventManager.addListener("won", "setEnabled", text)
   
   return text
 end
