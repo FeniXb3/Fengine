@@ -17,6 +17,7 @@ GameObject = class extends BaseEntity
   addSprite = function(spriteName)
     if sprites[spriteName] then
       this.renderable = new Sprite(spriteName)
+      this.renderable.gameObject = this
       return this.renderable
     else
       logError("Cannot create sprite <" + spriteName + ">")
@@ -25,18 +26,21 @@ GameObject = class extends BaseEntity
   
   addLine = function(start, finish, color="white")
     this.renderable = new Line(start, finish, color)
+    this.renderable.gameObject = this
     
     return this.renderable
   end
   
   addText = function(content, height, color, font="BitCell")
     this.renderable = new Text(content, height, color, font)
+    this.renderable.gameObject = this
     return this.renderable
   end
   
   // TODO: Think of better name for actualExpected
   addActualExpected = function(actual, expected, onReached, onChanged)
     this.actualExpected = new ActualExpected(actual, expected, onReached, onChanged)
+    this.actualExpected.gameObject = this
     return actualExpected
    end
   
@@ -77,6 +81,7 @@ GameObject = class extends BaseEntity
   addTouchable = function(position, translation, size, scale, anchor, onPress, onHold, onRelease)
     if size and scale and anchor then
       this.touchable = new Touchable(position, translation, size, scale, anchor, onPress, onHold, onRelease)
+      this.touchable.gameObject = this
       return this.touchable
     else
       logError("Adding touchable to game object <" + name + "> was not possible. "
