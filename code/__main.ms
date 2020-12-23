@@ -1,6 +1,6 @@
 init = function()
   engine =  Fengine.getInstance()
-  initGameFingerprint(engine)
+  gameFingerprint.init(engine)
 end
 
 update = function()
@@ -10,4 +10,3 @@ end
 draw = function()
   engine.draw()  
 end
-
