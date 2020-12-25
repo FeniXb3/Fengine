@@ -39,27 +39,40 @@ game201224 = object
   prepareElements = function(spriteName, amount)
     local elements = []
     for i = 1 to amount
-      local name = spriteName + i
-      local element = engine.addGameObject(name)
-      element.addSprite(spriteName)
-      
-      local x = random.nextInt(screen.width)
-      - (screen.width/2)
-      local y = random.nextInt(screen.height)
-      - (screen.height/2)
-      element.position.setTo(Vector2.make(x, y))
-      
-      element.addTouchableOnSprite(function() 
-        local go = this.gameObject
-        local spriteName = go.renderable.image.name
-        Fengine.getInstance().eventManager
-          .triggerEvent(spriteName + "Touched", go)
-      end)
+      local element = prepareSingleElement(spriteName, i)
       
       elements.push(element)
     end
     
     return elements
+  end
+  
+  prepareSingleElement = function(spriteName, index)
+    local name = spriteName + index
+    local element = engine.addGameObject(name)
+    element.addSprite(spriteName)
+    
+    local position = getRandomPosition()
+    element.position.setTo(position)
+    
+    local onPress = function() 
+      local go = this.gameObject
+      local spriteName = go.renderable.image.name
+      Fengine.getInstance().eventManager
+        .triggerEvent(spriteName + "Touched", go)
+    end
+    element.addTouchableOnSprite(onPress)
+    
+    return element
+  end
+  
+  getRandomPosition = function()
+    local x = random.nextInt(screen.width)
+      - (screen.width/2)
+      local y = random.nextInt(screen.height)
+      - (screen.height/2)
+      
+    return new Vector2(x, y)
   end
   
   prepareWinText = function(engine)
