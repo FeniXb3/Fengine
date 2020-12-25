@@ -27,7 +27,9 @@ EventManager = class extends BaseEntity
     if hasEvent(eventType) then
       local event = events[eventType]
       event.trigger(data)
-    end
+    else
+      logError("Event <"+eventType+"> does not exist")
+    end  
   end
   
   hasEvent = function(eventType)
