@@ -1,7 +1,11 @@
 game201224 = object
   init = function(engine)
-    animalsToFeed = 7
-    animalsFed = 0
+    local animalsToFeed = 2
+    expectedAnimals = engine.addGameObject("expectedAnimals")
+    expectedAnimals.addActualExpected(0, animalsToFeed, function()
+        Fengine.getInstance()
+          .eventManager.triggerEvent("won", true)
+      end)
     
     sheeps = prepareElements("sheep", animalsToFeed)
     food = prepareElements("food", animalsToFeed)
@@ -25,15 +29,10 @@ game201224 = object
   
   feed = function(data)
     if holdingFood then
-      animalsFed += 1
+      expectedAnimals.actualExpected.changeBy(1)
       data.setEnabled(false)
       holdingFood = false
     end
-    
-    if animalsFed == animalsToFeed then
-      Fengine.getInstance()
-        .eventManager.triggerEvent("won", true)
-      end
   end
   
   prepareElements = function(spriteName, amount)
@@ -46,7 +45,7 @@ game201224 = object
     
     return elements
   end
-  
+
   prepareSingleElement = function(spriteName, index)
     local name = spriteName + index
     local element = engine.addGameObject(name)
