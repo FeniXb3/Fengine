@@ -1,6 +1,6 @@
 init = function()
   engine =  Fengine.getInstance()
-  gameFingerprint.init(engine)
+  game201224.init(engine)
 end
 
 update = function()
