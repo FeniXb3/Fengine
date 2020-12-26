@@ -25,4 +25,16 @@ Vector2 = class extends BaseEntity
     this.x = value.x
     this.y = value.y
   end
+  
+  subtract = function(other)
+    return new Vector2(x - other.x, y - other.y)
+  end
+  
+  getDistanceTo = function(other)
+    return sqrt((x-other.x)^2 + (y-other.y)^2)
+  end
+  
+  divideByScalar = function(value)
+    return new Vector2(x/value, y/value)
+  end
 end

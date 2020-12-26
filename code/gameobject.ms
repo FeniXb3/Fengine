@@ -88,6 +88,31 @@ GameObject = class extends BaseEntity
         + "Provided values: size=" + size.getInfo() + " scale=" + scale.getInfo() + " anchor="+anchor.getInfo())
     end
   end
+  
+  
+  addColliderOnSprite = function(onCollision)
+    if renderable.class == Sprite then
+      return addCollider(position, parent.position, renderable.size, renderable.scale, renderable.anchor, onCollision)
+    else
+      logError("Renderable of the object <" + name + "> is not a sprite.")
+    end
+  end
+  
+  addCollider = function(position, translation, size, scale, anchor, onCollision)
+    if size and scale and anchor then
+      this.collider = new Collider(position, translation, size, scale, anchor, onCollision)
+      this.collider.gameObject = this
+      return this.collider
+    else
+      logError("Adding collider to game object <" + name + "> was not possible. "
+        + "Provided values: size=" + size.getInfo() + " scale=" + scale.getInfo() + " anchor="+anchor.getInfo())
+    end
+  end
+  
+  addRigidBody = function()
+    this.rigidBody = new RigidBody()
+    return this.rigidBody
+  end
  
   checkTouch = function()
     if this.touchable then
@@ -108,7 +133,30 @@ GameObject = class extends BaseEntity
     
     if enabled then
       checkTouch()
+      move()
+      
+      // TODO: Move out to Fengine class
+      if collider then
+        for go in Fengine.getInstance().gameObjects
+          if go != this and go.enabled and checkCollision(go) then
+            collider.onCollision(go)
+          end
+        end
+      end
     end
+  end
+  
+  move = function()
+    if not this.rigidBody then
+      return
+    end 
+    
+    position.changeBy(rigidBody.velocity)
+  end
+  
+  checkCollision = function(other)
+    return position.getDistanceTo(other.position)
+      <= this.collider.radius + other.collider.radius
   end
   
   draw = function()

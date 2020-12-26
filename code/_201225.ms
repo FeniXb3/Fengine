@@ -1,38 +1,34 @@
-game201224 = object
+game201225 = object
   init = function(engine)
-    local animalsToFeed = 2
+    local animalsToHandle = 2
     expectedAnimals = engine.addGameObject("expectedAnimals")
-    expectedAnimals.addActualExpected(0, animalsToFeed, function()
+    expectedAnimals.addActualExpected(0, animalsToHandle, function()
         Fengine.getInstance()
           .eventManager.triggerEvent("won", true)
       end)
     
-    sheeps = prepareElements("sheep", animalsToFeed)
-    food = prepareElements("food", animalsToFeed)
+    sheeps = prepareElements("sheep", animalsToHandle)
+    targets = prepareTargets(engine)
     winText = prepareWinText(engine)
       
     engine.eventManager
     .addListener("sheepTouched", 
-      "feed", this)
-      
+      "push", this)
+    
     engine.eventManager
-    .addListener("foodTouched", 
-      "collect", this)
+    .addListener("sheepHandled", 
+      "handle", this)
   end
   
-  collect = function(data)
-    if not holdingFood then
-      data.setEnabled(false)
-      holdingFood = true
-    end
+  handle = function(data)
+    expectedAnimals.actualExpected.changeBy(1)
   end
   
-  feed = function(data)
-    if holdingFood then
-      expectedAnimals.actualExpected.changeBy(1)
-      data.setEnabled(false)
-      holdingFood = false
-    end
+  push = function(data)
+    local touchPoint = Vector2.make(touch.x, touch.y)
+    local direction = data.position.subtract(touchPoint)
+      .divideByScalar(4)
+    data.rigidBody.velocity.setTo(direction)
   end
   
   prepareElements = function(spriteName, amount)
@@ -50,6 +46,7 @@ game201224 = object
     local name = spriteName + index
     local element = engine.addGameObject(name)
     element.addSprite(spriteName)
+    element.addRigidBody()
     
     local position = getRandomPosition()
     element.position.setTo(position)
@@ -61,6 +58,14 @@ game201224 = object
         .triggerEvent(spriteName + "Touched", go)
     end
     element.addTouchableOnSprite(onPress)
+    element.addColliderOnSprite(function(other)
+      if other.name.startsWith("target") then
+        Fengine.getInstance().eventManager
+          .triggerEvent("sheepHandled", this.gameObject)
+        this.gameObject.setEnabled(false)
+        other.setEnabled(false)
+      end
+    end)
     
     return element
   end
@@ -72,6 +77,27 @@ game201224 = object
       - (screen.height/2)
       
     return new Vector2(x, y)
+  end
+  
+  prepareTargets = function(engine)
+    local targets = []
+    local positions = [
+      new Vector2(-screen.width/2, -screen.height/2),
+      new Vector2(screen.width/2, screen.height/2),
+    ]
+
+    for i = 1 to 2
+      
+      local target = engine.addGameObject("target" + 1)
+      target.addSprite("target")
+      target.position.setTo(positions[i-1])
+      target.addColliderOnSprite()
+      
+      targets.push(target)
+    end
+    
+    return targets
+  end
   end
   
   prepareWinText = function(engine)
