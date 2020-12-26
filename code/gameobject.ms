@@ -138,8 +138,17 @@ GameObject = class extends BaseEntity
       // TODO: Move out to Fengine class
       if collider then
         for go in Fengine.getInstance().gameObjects
-          if go != this and go.enabled and checkCollision(go) then
+          if go != this and go.enabled and go.collider and checkCollision(go) then
+            
+            // TODO: Fix it to not fire collision events twice
             collider.onCollision(go)
+            go.collider.onCollision(this)
+            
+            // TODO: Handle bounce on collision
+            if not collider.isTrigger and not go.collider.isTrigger then
+              rigidBody.velocity.setTo(0, 0)
+              go.rigidBody.velocity.setTo(0, 0)
+            end
           end
         end
       end
