@@ -57,7 +57,6 @@ Fengine = class
         checkTouch(go)
         move(go)
         
-        // TODO: Move out to Fengine class
         if go.collider then
           for other in gameObjects
             if other != go and other.enabled and other.collider and checkCollision(go, other) then

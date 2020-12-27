@@ -78,6 +78,14 @@ GameObject = class extends BaseEntity
     end
   end
   
+  addTouchableOnText = function(onPress, onHold, onRelease)
+    if renderable.class == Text then
+      return addTouchable(position, parent.position, renderable.size, renderable.scale, renderable.anchor, onPress, onHold, onRelease)
+    else
+      logError("Renderable of the object <" + name + "> is not a text.")
+    end
+  end
+  
   addTouchable = function(position, translation, size, scale, anchor, onPress, onHold, onRelease)
     if size and scale and anchor then
       this.touchable = new Touchable(position, translation, size, scale, anchor, onPress, onHold, onRelease)
