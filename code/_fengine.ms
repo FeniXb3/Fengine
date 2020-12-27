@@ -53,8 +53,57 @@ Fengine = class
     // TODO: Make separate loops for handling different components
     for go in gameObjects
       go.update()
+      if go.enabled then
+        checkTouch(go)
+        move(go)
+        
+        // TODO: Move out to Fengine class
+        if go.collider then
+          for other in gameObjects
+            if other != go and other.enabled and other.collider and checkCollision(go, other) then
+              
+              // TODO: Fix it to not fire collision events twice
+              go.collider.onCollision(other)
+              other.collider.onCollision(go)
+              
+              // TODO: Handle bounce on collision
+              if not go.collider.isTrigger and not other.collider.isTrigger then
+                go.rigidBody.velocity.setTo(0, 0)
+                other.rigidBody.velocity.setTo(0, 0)
+              end
+            end
+          end
+        end
+      end
     end
   end
+  
+  checkTouch = function(go)
+    if go.touchable then
+      local bounds = go.touchable.bounds
+      if touch.press and bounds.isPointInside(touch) then
+        go.touchable.onPress()
+      elsif touch.touching and bounds.isPointInside(touch) then
+        go.touchable.onHold()
+      elsif touch.release and bounds.isPointInside(touch) then
+        go.touchable.onRelease()
+      end
+    end
+  end  
+  
+  move = function(go)
+    if not go.rigidBody then
+      return
+    end 
+    
+    go.position.changeBy(go.rigidBody.velocity)
+  end
+  
+  checkCollision = function(go, other)
+    return go.position.getDistanceTo(other.position)
+      <= go.collider.radius + other.collider.radius
+  end
+  
   
   draw = function()
     clearScreen()

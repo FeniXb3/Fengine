@@ -113,59 +113,10 @@ GameObject = class extends BaseEntity
     this.rigidBody = new RigidBody()
     return this.rigidBody
   end
- 
-  checkTouch = function()
-    if this.touchable then
-      local bounds = this.touchable.bounds
-      if touch.press and bounds.isPointInside(touch) then
-        this.touchable.onPress()
-      elsif touch.touching and bounds.isPointInside(touch) then
-        this.touchable.onHold()
-      elsif touch.release and bounds.isPointInside(touch) then
-        this.touchable.onRelease()
-      end
-    end
-  end  
   
   update = function()
     onUpdate()
     enableChangeAction()
-    
-    if enabled then
-      checkTouch()
-      move()
-      
-      // TODO: Move out to Fengine class
-      if collider then
-        for go in Fengine.getInstance().gameObjects
-          if go != this and go.enabled and go.collider and checkCollision(go) then
-            
-            // TODO: Fix it to not fire collision events twice
-            collider.onCollision(go)
-            go.collider.onCollision(this)
-            
-            // TODO: Handle bounce on collision
-            if not collider.isTrigger and not go.collider.isTrigger then
-              rigidBody.velocity.setTo(0, 0)
-              go.rigidBody.velocity.setTo(0, 0)
-            end
-          end
-        end
-      end
-    end
-  end
-  
-  move = function()
-    if not this.rigidBody then
-      return
-    end 
-    
-    position.changeBy(rigidBody.velocity)
-  end
-  
-  checkCollision = function(other)
-    return position.getDistanceTo(other.position)
-      <= this.collider.radius + other.collider.radius
   end
   
   draw = function()
