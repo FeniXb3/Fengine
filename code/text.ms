@@ -25,4 +25,8 @@ Text = class extends Drawable
     this.shadow = shadow
     return this
   end
+  
+  setContent = function(content)
+    this.content = content
+  end
 end
