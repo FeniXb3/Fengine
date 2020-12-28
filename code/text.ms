@@ -21,7 +21,7 @@ Text = class extends Drawable
     screen.drawText(content, position.x, position.y, size.y, color)
   end
   
-  withShadow = function(shadow)
+  withShadow = function(shadow=Shadow.make())
     this.shadow = shadow
     return this
   end
