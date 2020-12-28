@@ -4,22 +4,7 @@ game201227 = object
   
   init = function(engine)
     players = preparePlayers("player", 4)
-     
-    
     winText = prepareWinText(engine)
-      
-    for p in players
-      engine.eventManager
-      .addListener(p.name+"Touched", 
-        "push", this)
-    end
-  end
-  
-  push = function(data)
-    local touchPoint = Vector2.make(touch.x, touch.y)
-    local direction = data.position.subtract(touchPoint)
-      .divideByScalar(4)
-    data.rigidBody.velocity.setTo(direction)
   end
   
   preparePlayers = function(spriteType, amount)
@@ -32,7 +17,6 @@ game201227 = object
       local player = prepareSingleElement(name, name, role)
       local x = (player.renderable.size.x * 2) * (i - amount/2)
       player.position.setTo(Vector2.make(x, 0))
-      
       
       players.push(player)
     end
