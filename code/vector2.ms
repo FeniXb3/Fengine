@@ -37,4 +37,8 @@ Vector2 = class extends BaseEntity
   divideByScalar = function(value)
     return new Vector2(x/value, y/value)
   end
+  
+  multiply = function(other)
+    return new Vector2(x * other.x, y * other.y)
+  end
 end
