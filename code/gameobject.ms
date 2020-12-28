@@ -24,6 +24,16 @@ GameObject = class extends BaseEntity
     end
   end
   
+  addMap = function(mapName)
+    if maps[mapName] then
+      this.renderable = new Map(mapName)
+      this.renderable.gameObject = this
+      return this.renderable
+    else
+      logError("Cannot create map <" + mapName + ">")
+    end
+  end
+  
   addLine = function(start, finish, color="white")
     this.renderable = new Line(start, finish, color)
     this.renderable.gameObject = this
@@ -83,6 +93,14 @@ GameObject = class extends BaseEntity
       return addTouchable(position, parent.position, renderable.size, renderable.scale, renderable.anchor, onPress, onHold, onRelease)
     else
       logError("Renderable of the object <" + name + "> is not a text.")
+    end
+  end
+  
+  addTouchableOnMap = function(onPress, onHold, onRelease)
+    if renderable.class == Map then
+      return addTouchable(position, parent.position, renderable.size, renderable.scale, renderable.anchor, onPress, onHold, onRelease)
+    else
+      logError("Renderable of the object <" + name + "> is not a map.")
     end
   end
   
