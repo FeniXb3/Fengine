@@ -22,6 +22,18 @@ Fengine = class
     return go
   end
   
+  addWinTextObject = function(content="You win!")
+    local text = addGameObject("winText")
+    text.addText(content, 30, "white")
+      .withShadow()
+    text.setEnabled(false)
+    
+    eventManager
+      .addListener("won", "setEnabled", text)
+    
+    return text
+  end
+  
   // findGameObject = function(name)
   //   for go in gameObjects
   //     if go.name == name then

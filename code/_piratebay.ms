@@ -76,7 +76,7 @@ gamePirateBay = object
       end
     end
     
-    winText = prepareWinText(engine)
+    winText = engine.addWinTextObject()
   end
   
   prepareActualExpectedWithText = function(name, expected, textPart, addingEventName, position, anchor, allowExcess, onReached)
@@ -118,16 +118,5 @@ gamePirateBay = object
     map.addMap(mapName).withScale(scale).withAlpha(alpha)
     
     return map
-  end
-  
-  prepareWinText = function(engine)
-    local text = engine.addGameObject("winText")
-    text.addText("You win!", 30, "white")
-      .withShadow()
-    text.setEnabled(false)
-    engine.eventManager
-      .addListener("won", "setEnabled", text)
-    
-    return text
   end
 end
