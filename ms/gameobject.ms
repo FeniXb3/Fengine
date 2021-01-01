@@ -8,8 +8,16 @@ GameObject = class extends BaseEntity
     this.enabled = true
     this.enableChangeAction = enableChangeAction
     this.onUpdate = onUpdate
-  end
+  end 
   
+  getPosition = function()
+    return position
+  end
+
+  setPosition = function(value)
+    position.setTo(value)
+  end
+
   setEnabled = function(value)
     this.enabled = value
   end

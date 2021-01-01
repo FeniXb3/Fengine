@@ -62,6 +62,7 @@ Fengine = class
   end  
   
   update = function()
+    Tweener.update()
     // TODO: Make separate loops for handling different components
     for go in gameObjects
       go.update()
