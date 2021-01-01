@@ -50,18 +50,32 @@ game210101 = object
     boat = engine.addGameObject("boat")
     boat.addSprite("player1")
     boat.onGoToSea = function(data)
-        Tweener.to(this, "getPosition", "setPosition", data, 0.4)
-            .onFinished = function()
-                Fengine.getInstance().eventManager.triggerEvent("checkForFish",
-                    this.targetValue)
-            end
+        local distance = this.position.getDistanceTo(data)
+        local maxDistance = 100
+
+        if distance <= maxDistance then
+            local maxDuration = 3
+            local duration = maxDuration * (distance/maxDistance)
+            Tweener.to(this, "getPosition", "setPosition", data, duration)
+                .onFinished = function()
+                    Fengine.getInstance().eventManager.triggerEvent("checkForFish",
+                        this.targetValue)
+                end
+        end
     end
 
     boat.onGoToBase = function(data)
-        Tweener.to(this, "getPosition", "setPosition", data, 0.4)
-            .onFinished = function()
-                Fengine.getInstance().eventManager.triggerEvent("passFish")
-            end
+        local distance = this.position.getDistanceTo(data)
+        local maxDistance = 100
+
+        if distance <= maxDistance then
+            local maxDuration = 3
+            local duration = maxDuration * (distance/maxDistance)
+            Tweener.to(this, "getPosition", "setPosition", data, duration)
+                .onFinished = function()
+                    Fengine.getInstance().eventManager.triggerEvent("passFish")
+                end 
+        end
     end
 
 
