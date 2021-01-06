@@ -13,6 +13,7 @@ Fengine = class
     this.clearColor = "black"
     this.logger = new Logger()
     this.eventManager = EventManager.getInstance()
+    this.inputManager = InputManager.getInstance()
   end
   
   addGameObject = function(name, x, y)
@@ -63,6 +64,7 @@ Fengine = class
   
   update = function()
     Tweener.update()
+    inputManager.update(gameObjects)
     // TODO: Make separate loops for handling different components
     for go in gameObjects
       go.update()

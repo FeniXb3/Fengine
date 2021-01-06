@@ -145,7 +145,14 @@ GameObject = class extends BaseEntity
   
   addRigidBody = function()
     this.rigidBody = new RigidBody()
+    this.rigidBody.gameObject = this
     return this.rigidBody
+  end
+
+  addInputHandler = function()
+    this.inputHandler = new InputHandler()
+    this.inputHandler.gameObject = this
+    return this.inputHandler
   end
   
   update = function()
