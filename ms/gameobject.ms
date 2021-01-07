@@ -169,6 +169,12 @@ GameObject = class extends BaseEntity
     return this.renderable
   end
   
+  addRectangle = function(size)
+    this.renderable = new Rectngle(size)
+    this.renderable.gameObject = this
+    return this.renderable
+  end
+  
   update = function()
     onUpdate()
     enableChangeAction()

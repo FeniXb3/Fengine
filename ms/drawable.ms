@@ -5,6 +5,14 @@ Drawable = class extends BaseEntity
     this.scale = scale
     this.anchor = anchor
   end
+
+  setAlpha = function(alpha)
+    this.alpha = alpha
+  end
+
+  getAlpha = function()
+    return this.alpha
+  end
   
   withAlpha = function(alpha)
     this.alpha = alpha

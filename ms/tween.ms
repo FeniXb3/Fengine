@@ -4,7 +4,11 @@ Tween = class
     this.getter = getter
      this.setter = setter
      this.targetValue = targetValue
-     this.startValue = this.theObject[this.getter]().copy()
+     if this.theObject[this.getter]().copy then
+      this.startValue = this.theObject[this.getter]().copy()
+     else
+      this.startValue = this.theObject[this.getter]()
+     end
      this.duration = duration
      this.startTime = system.time()
      this.lastUpdateTime = system.time()

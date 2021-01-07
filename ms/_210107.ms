@@ -2,8 +2,34 @@ game210107 = object
   init = function(engine)
     screen.bounds = engine.getScreenBounds()
     prepareSea()
-    prepareBase()
     prepareBoat()
+    fader = engine.addGameObject("fader")
+    fader.addRectangle().withFill("black")
+    fader.setEnabled(false)
+    fader.onWinningSequence = function(step)
+      if step != 1 and step != 3 then
+        return
+      end
+
+      setEnabled(true)
+      local startingValue = 0
+      local targetValue = 0.5
+      local onFinish = 0
+      if step == 3 then
+        startingValue += targetValue
+        targetValue = startingValue - targetValue
+      elsif step == 1 then
+        onFinish = function()
+          Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", 2)
+        end
+      end
+      renderable.setAlpha(startingValue)
+      Tweener.to(renderable, "getAlpha", "setAlpha", targetValue, 2)
+      .onFinished = onFinish
+    end
+    engine.eventManager.addListener("startWinningSequence", "onWinningSequence", fader)
+
+    prepareBase()
     prepareCollectedFish()
     prepareDeliveredFish()
 
@@ -32,8 +58,13 @@ game210107 = object
       .addClip("start")
       .addClip("flag")
       .play("empty")
-    base.onWinningSequence = function()
+    base.onWinningSequence = function(step)
+      if step != 2 then
+        return
+      end
+
       renderable.play("start", 1, function()
+        Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", 3)
         play("flag")
         triggerWin()
       end)
@@ -142,11 +173,11 @@ game210107 = object
 
   prepareDeliveredFish = function()
     local onDeliveredFishReached = function()
-      Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", true)
+      Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", 1)
     end
 
     local deliveredFish = prepareActualExpectedWithText(
-      "deliveredFish", 10,"Delivered: ", "deliverFish",
+      "deliveredFish", 1,"Delivered: ", "deliverFish",
       Vector2.make(screen.bounds.left, screen.bounds.bottom),
       Vector2.make(-1, -1), true, onDeliveredFishReached)
     deliveredFish.deliverFish = function(data)
