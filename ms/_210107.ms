@@ -79,17 +79,20 @@ game210107 = object
 
   prepareBoat = function()
     local boat = engine.addGameObject("boat")
-    boat.addSprite("boat")
+    boat.addAnimator("boat")
+      .addClip("sail")
 
     local goToBase = function(data)
       local distance = this.position.getDistanceTo(data)
       local maxDistance = 100
 
       if distance <= maxDistance then
+        renderable.play("sail")
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
         Tweener.to(this, "getPosition", "setPosition", data, duration)
-        .onFinished = function()
+        .onFinished = function(target)
+          target.renderable.play("__default__")
           Fengine.getInstance().eventManager.triggerEvent("passFish")
         end
       end
@@ -100,10 +103,12 @@ game210107 = object
       local maxDistance = 100
 
       if distance <= maxDistance then
+        renderable.play("sail")
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
         Tweener.to(this, "getPosition", "setPosition", data, duration)
-        .onFinished = function()
+        .onFinished = function(target)
+          target.renderable.play("__default__")
           Fengine.getInstance().eventManager.triggerEvent("checkForFish", this.targetValue)
         end
       end

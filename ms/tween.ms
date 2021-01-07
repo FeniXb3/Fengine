@@ -32,7 +32,7 @@ Tween = class
     if secondsPassed >= duration and not finished then
         finished = true
         theObject[setter](targetValue)
-        onFinished()
+        onFinished(theObject)
         return
     elsif not finished then
         fractionDone = secondsPassed/duration
