@@ -88,6 +88,14 @@ GameObject = class extends BaseEntity
     return translation
   end
   
+  addTouchableOnRenderable = function(onPress, onHold, onRelease)
+    if renderable then
+      return addTouchable(position, parent.position, renderable.size, renderable.scale, renderable.anchor, onPress, onHold, onRelease)
+    else
+      logError("The object <" + name + "> has no renderable.")
+    end
+  end
+
   addTouchableOnSprite = function(onPress, onHold, onRelease)
     if renderable.class == Sprite then
       return addTouchable(position, parent.position, renderable.size, renderable.scale, renderable.anchor, onPress, onHold, onRelease)
