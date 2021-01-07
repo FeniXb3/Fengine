@@ -154,6 +154,12 @@ GameObject = class extends BaseEntity
     this.inputHandler.gameObject = this
     return this.inputHandler
   end
+
+  addAnimator = function(name)
+    this.renderable = new Animator(name)
+    this.renderable.gameObject = this
+    return this.renderable
+  end
   
   update = function()
     onUpdate()
