@@ -36,6 +36,14 @@ Animator = class extends Drawable
     this.animationFinished = false
   end
 
+  pause = function()
+    isPlaying = false
+  end
+
+  resume = function()
+    isPlaying = true
+  end
+
   draw = function(position, translation)
     if animationFinished and isPlaying then
       isPlaying = false
