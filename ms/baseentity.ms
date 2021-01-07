@@ -12,6 +12,10 @@ BaseEntity = class
   logInfo = function(text)
     Fengine.getInstance().logger.logInfo(text)
   end
+
+  triggerWin = function()
+    Fengine.getInstance().eventManager.triggerEvent("won", true)
+  end
   
   getInfo = function(depth)
     local info = "{"
