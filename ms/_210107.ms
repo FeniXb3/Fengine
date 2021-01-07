@@ -87,6 +87,7 @@ game210107 = object
       local maxDistance = 100
 
       if distance <= maxDistance then
+        renderable.angle = position.getAngleTo(data)-90
         renderable.play("sail")
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
@@ -103,6 +104,7 @@ game210107 = object
       local maxDistance = 100
 
       if distance <= maxDistance then
+        renderable.angle = position.getAngleTo(data)-90
         renderable.play("sail")
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)

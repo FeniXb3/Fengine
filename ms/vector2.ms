@@ -53,4 +53,14 @@ Vector2 = class extends BaseEntity
   copy = function()
     return new Vector2(x, y)
   end
+
+  getAngleBetween = function(source, target)
+    local tmp = new Vector2(target.x-source.x, target.y-source.y)
+    return atan2d(tmp.y, tmp.x)
+  end
+
+  getAngleTo = function(target)
+    local tmp = new Vector2(target.x-x, target.y-y)
+    return atan2d(tmp.y, tmp.x)
+  end
 end
