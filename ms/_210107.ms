@@ -87,7 +87,11 @@ game210107 = object
       local maxDistance = 100
 
       if distance <= maxDistance then
-        renderable.angle = position.getAngleTo(data)-90
+        local targetAngle = position.getAngleTo(data)-90
+        if abs(targetAngle-renderable.angle) > 180 then
+          targetAngle = (targetAngle-360)%360
+        end
+        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, 0.5)
         renderable.play("sail")
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
@@ -104,7 +108,11 @@ game210107 = object
       local maxDistance = 100
 
       if distance <= maxDistance then
-        renderable.angle = position.getAngleTo(data)-90
+        local targetAngle = position.getAngleTo(data)-90
+        if abs(targetAngle-renderable.angle) > 180 then
+          targetAngle = (targetAngle-360)%360
+        end
+        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, 0.5)
         renderable.play("sail")
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)

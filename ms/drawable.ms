@@ -14,6 +14,14 @@ Drawable = class extends BaseEntity
     return this.alpha
   end
   
+  setAngle = function(value)
+    this.angle = value
+  end
+
+  getAngle = function()
+    return this.angle
+  end
+
   withAlpha = function(alpha)
     this.alpha = alpha
     return this
