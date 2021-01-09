@@ -43,10 +43,12 @@ Animator = class extends Drawable
 
   pause = function()
     isPlaying = false
+    Fengine.getInstance().eventManager.triggerEvent("animationPaused", this)
   end
 
   resume = function()
     isPlaying = true
+    Fengine.getInstance().eventManager.triggerEvent("animationResumed", this)
   end
 
   draw = function(position, translation)
