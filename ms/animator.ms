@@ -26,6 +26,11 @@ Animator = class extends Drawable
 
     return this
   end
+  
+  playDefault = function(repeatitionCount=-1, afterAction)
+    play("__default__", repeatitionCount, afterAction)
+    return this
+  end
 
   reset = function()
     this.lastFrameTime = system.time()
