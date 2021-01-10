@@ -16,6 +16,7 @@ Tween = class
      this.finished = false
      this.secondsPassed = 0
      this.ease = "linear"
+     this.delay = 0
 
      if this.startValue.subtract then
         this.diff = this.targetValue.subtract(this.startValue)
@@ -33,9 +34,19 @@ Tween = class
     return this
   end
 
+  setDelay = function(delay)
+    this.delay = delay
+
+    return this
+  end
+
   update = function()
     currentTime = system.time()
-    secondsPassed = (currentTime - startTime) / 1000
+    secondsPassed = ((currentTime - startTime) / 1000) - delay
+    if secondsPassed < 0 then
+      return
+    end
+
     if secondsPassed >= duration and not finished then
         finished = true
         theObject[setter](targetValue)
