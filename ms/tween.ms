@@ -15,6 +15,7 @@ Tween = class
      this.plannedFinishTime = this.startTime + duration * 1000
      this.finished = false
      this.secondsPassed = 0
+     this.ease = "linear"
 
      if this.startValue.subtract then
         this.diff = this.targetValue.subtract(this.startValue)
@@ -26,6 +27,12 @@ Tween = class
     end
   end
 
+  setEase = function(ease)
+    this.ease = ease
+
+    return this
+  end
+
   update = function()
     currentTime = system.time()
     secondsPassed = (currentTime - startTime) / 1000
@@ -35,7 +42,7 @@ Tween = class
         onFinished(theObject)
         return
     elsif not finished then
-        fractionDone = secondsPassed/duration
+        fractionDone = EaseType[ease](secondsPassed/duration)
         currentValue = theObject[getter]()
 
         if startValue.add then
