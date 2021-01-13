@@ -81,6 +81,8 @@ gamePirateBay = object
     local boat = engine.addGameObject("boat")
     boat.addAnimator("boat")
       .addClip("sail")
+      .addClip("turn_left")
+      .addClip("turn_right")
 
     local goToBase = function(data)
       local distance = this.position.getDistanceTo(data)
@@ -88,18 +90,51 @@ gamePirateBay = object
 
       if distance <= maxDistance then
         local targetAngle = position.getAngleTo(data)-90
-        if abs(targetAngle-renderable.angle) > 180 then
-          targetAngle = (targetAngle-360)%360
+        if targetAngle > 180 then
+          targetAngle -= 360
+        elsif targetValue < -180 then
+          targetAngle += 360
         end
-        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, 0.5)
-        renderable.play("sail")
+
+        local angleDiff = targetAngle - renderable.angle
+
+        if abs(angleDiff)%360 > 180 then
+          if renderable.angle >= 0 then
+            renderable.angle -= 360
+          elsif renderable.angle < 0 then
+            renderable.angle += 360
+          end
+
+          if renderable.angle > 0 then
+            renderable.angle = renderable.angle % 361
+          elsif renderable.angle < 0 then
+            renderable.angle = renderable.angle % (-361)
+          end
+
+          angleDiff = targetAngle - renderable.angle
+        end
+        if angleDiff > 0 then
+          renderable.play("turn_left")
+        elsif angleDiff < 0 then
+          renderable.play("turn_right")
+        end
+
+        local rotationDuration = abs(angleDiff)/45 * 0.3
+        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, rotationDuration)
+        .setEase("easeInOutSine")
+        .setOnFinished(function(target)
+          target.play("sail") 
+        end)
+
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
         Tweener.to(this, "getPosition", "setPosition", data, duration)
-        .onFinished = function(target)
+        .setEase("easeInOutCubic")
+        .setOnFinished( function(target)
           target.renderable.play("__default__")
           Fengine.getInstance().eventManager.triggerEvent("passFish")
-        end
+        end)
+        .setDelay(rotationDuration)
       end
     end
 
@@ -109,18 +144,51 @@ gamePirateBay = object
 
       if distance <= maxDistance then
         local targetAngle = position.getAngleTo(data)-90
-        if abs(targetAngle-renderable.angle) > 180 then
-          targetAngle = (targetAngle-360)%360
+        if targetAngle > 180 then
+          targetAngle -= 360
+        elsif targetValue < -180 then
+          targetAngle += 360
         end
-        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, 0.5)
-        renderable.play("sail")
+
+        local angleDiff = targetAngle - renderable.angle
+
+        if abs(angleDiff)%360 > 180 then
+          if renderable.angle >= 0 then
+            renderable.angle -= 360
+          elsif renderable.angle < 0 then
+            renderable.angle += 360
+          end
+
+          if renderable.angle > 0 then
+            renderable.angle = renderable.angle % 361
+          elsif renderable.angle < 0 then
+            renderable.angle = renderable.angle % (-361)
+          end
+
+          angleDiff = targetAngle - renderable.angle
+        end
+        if angleDiff > 0 then
+          renderable.play("turn_left")
+        elsif angleDiff < 0 then
+          renderable.play("turn_right")
+        end
+
+        local rotationDuration = abs(angleDiff)/45 * 0.3
+        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, rotationDuration)
+        .setEase("easeInOutSine")
+        .setOnFinished(function(target)
+          target.play("sail") 
+        end)
+
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
         Tweener.to(this, "getPosition", "setPosition", data, duration)
-        .onFinished = function(target)
+        .setEase("easeInOutCubic")
+        .setOnFinished( function(target)
           target.renderable.play("__default__")
           Fengine.getInstance().eventManager.triggerEvent("checkForFish", this.targetValue)
-        end
+        end)
+        .setDelay(rotationDuration)
       end
     end
 

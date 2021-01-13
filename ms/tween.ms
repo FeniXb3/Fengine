@@ -23,9 +23,6 @@ Tween = class
     else
         this.diff = this.targetValue - this.startValue
     end
-     this.onFinished = function()
-        print("Finished!")
-    end
   end
 
   setEase = function(ease)
@@ -36,6 +33,12 @@ Tween = class
 
   setDelay = function(delay)
     this.delay = delay
+
+    return this
+  end
+
+  setOnFinished = function(onFinished)
+    this.onFinished = onFinished
 
     return this
   end

@@ -11,7 +11,7 @@ Animator = class extends Drawable
     super()
   end
 
-  addClip = function(clipName, )
+  addClip = function(clipName)
     clips[clipName] = sprites[name+"_"+clipName]
 
     return this
