@@ -84,47 +84,61 @@ gamePirateBay = object
       .addClip("turn_left")
       .addClip("turn_right")
 
+    boat.rotate = function(data)
+      local targetAngle = position.getAngleTo(data)-90
+      if targetAngle > 180 then
+        targetAngle -= 360
+      elsif targetValue < -180 then
+        targetAngle += 360
+      end
+
+      local angleDiff = targetAngle - renderable.angle
+
+      if abs(angleDiff)%360 > 180 then
+        print(angleDiff)
+        print(targetAngle)
+        print(renderable.angle)
+        if renderable.angle > 180 then
+          renderable.angle -= 360
+          print("Minus CURRENT 360:" +renderable.angle)
+        elsif renderable.angle < -180 then
+          renderable.angle += 360
+          print("Plus CURRENT 360:" +renderable.angle)
+        elsif targetAngle > 180 then
+          targetAngle -= 360
+          print("Minus TARGET 360:" +targetAngle)
+        elsif targetAngle < -180 then
+          targetAngle += 360
+          print("Plus TARGET 360:" +targetAngle)
+        end
+
+        angleDiff = targetAngle - renderable.angle
+        if abs(angleDiff) > 180 then
+          print(":(")
+        end
+      end
+      if angleDiff > 0 then
+        renderable.play("turn_left")
+      elsif angleDiff < 0 then
+        renderable.play("turn_right")
+      end
+
+      local rotationDuration = abs(angleDiff)/45 * 0.3
+      Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, rotationDuration)
+      .setEase("easeInOutSine")
+      .setOnFinished(function(target)
+        target.play("sail")
+      end)
+
+      return rotationDuration
+    end
+
     local goToBase = function(data)
       local distance = this.position.getDistanceTo(data)
       local maxDistance = 100
 
       if distance <= maxDistance then
-        local targetAngle = position.getAngleTo(data)-90
-        if targetAngle > 180 then
-          targetAngle -= 360
-        elsif targetValue < -180 then
-          targetAngle += 360
-        end
-
-        local angleDiff = targetAngle - renderable.angle
-
-        if abs(angleDiff)%360 > 180 then
-          if renderable.angle >= 0 then
-            renderable.angle -= 360
-          elsif renderable.angle < 0 then
-            renderable.angle += 360
-          end
-
-          if renderable.angle > 0 then
-            renderable.angle = renderable.angle % 361
-          elsif renderable.angle < 0 then
-            renderable.angle = renderable.angle % (-361)
-          end
-
-          angleDiff = targetAngle - renderable.angle
-        end
-        if angleDiff > 0 then
-          renderable.play("turn_left")
-        elsif angleDiff < 0 then
-          renderable.play("turn_right")
-        end
-
-        local rotationDuration = abs(angleDiff)/45 * 0.3
-        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, rotationDuration)
-        .setEase("easeInOutSine")
-        .setOnFinished(function(target)
-          target.play("sail") 
-        end)
+        local rotationDuration = rotate(data)
 
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
@@ -143,42 +157,7 @@ gamePirateBay = object
       local maxDistance = 100
 
       if distance <= maxDistance then
-        local targetAngle = position.getAngleTo(data)-90
-        if targetAngle > 180 then
-          targetAngle -= 360
-        elsif targetValue < -180 then
-          targetAngle += 360
-        end
-
-        local angleDiff = targetAngle - renderable.angle
-
-        if abs(angleDiff)%360 > 180 then
-          if renderable.angle >= 0 then
-            renderable.angle -= 360
-          elsif renderable.angle < 0 then
-            renderable.angle += 360
-          end
-
-          if renderable.angle > 0 then
-            renderable.angle = renderable.angle % 361
-          elsif renderable.angle < 0 then
-            renderable.angle = renderable.angle % (-361)
-          end
-
-          angleDiff = targetAngle - renderable.angle
-        end
-        if angleDiff > 0 then
-          renderable.play("turn_left")
-        elsif angleDiff < 0 then
-          renderable.play("turn_right")
-        end
-
-        local rotationDuration = abs(angleDiff)/45 * 0.3
-        Tweener.to(this.renderable, "getAngle", "setAngle", targetAngle, rotationDuration)
-        .setEase("easeInOutSine")
-        .setOnFinished(function(target)
-          target.play("sail") 
-        end)
+        local rotationDuration = rotate(data)
 
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
