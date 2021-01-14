@@ -6,8 +6,14 @@ Collider = class extends BaseEntity
     // TODO: Handle scale
     this.radius = sqrt(size.x^2+size.y^2)/2
   end
-  
+
   setIsTrigger = function(value)
     this.isTrigger = value
+    return this
+  end
+
+  setOnCollision = function(value)
+    this.onCollision = value
+    return this
   end
 end
