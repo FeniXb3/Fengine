@@ -8,6 +8,11 @@ game210114 = object
     ground.addColliderOnSprite()
 
     local ground = engine.addGameObject("ground")
+    ground.setPosition(Vector2.make(screen.bounds.left*0.5, 0))
+    ground.addSprite("ground")
+    ground.addColliderOnSprite()
+
+    local ground = engine.addGameObject("ground")
     ground.setPosition(Vector2.make(screen.bounds.left, screen.bounds.bottom))
     ground.addSprite("ground")
     ground.addColliderOnSprite()
@@ -32,17 +37,14 @@ game210114 = object
       .reactOn("jump", "press", function()
         this.gameObject.position.changeBy(Vector2.make(0, 1))
         this.gameObject.rigidBody.velocity.changeBy(Vector2.make(0, 5))
-        print("jump!")
       end)
       .reactOn("move_right", "hold", function()
         local currentVelocity = this.gameObject.rigidBody.velocity
         this.gameObject.rigidBody.setVelocity(Vector2.make(2, currentVelocity.y))
-        print("move_right!")
       end)
       .reactOn("move_left", "hold", function()
         local currentVelocity = this.gameObject.rigidBody.velocity
         this.gameObject.rigidBody.setVelocity(Vector2.make(-2, currentVelocity.y))
-        print("move_left!")
       end)
 
     

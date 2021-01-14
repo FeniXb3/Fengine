@@ -33,6 +33,10 @@ Vector2 = class extends BaseEntity
   add = function(other)
     return new Vector2(x + other.x, y + other.y)
   end
+
+  getLength = function()
+    return sqrt(x^2 + y^2)
+  end
   
   getDistanceTo = function(other)
     return sqrt((x-other.x)^2 + (y-other.y)^2)

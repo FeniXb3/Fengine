@@ -74,7 +74,7 @@ Fengine = class
         checkTouch(go)
         move(go)
         
-        if go.collider then
+        if go.collider and go.rigidBody then
           for other in gameObjects
             if other != go and other.enabled and other.collider and checkCollision(go, other) then
               
@@ -84,7 +84,15 @@ Fengine = class
               
               // TODO: Handle bounce on collision
               if not go.collider.isTrigger and not other.collider.isTrigger then
-                go.rigidBody.velocity.setTo(0, 0)
+                local velocity = go.rigidBody.velocity
+                local reverse = velocity.multiplyByScalar(-0.4).divideByScalar(velocity.getLength())
+
+                while checkCollision(go, other)
+                  go.position.changeBy(reverse)
+                end
+
+                go.rigidBody.velocity.setTo(physicsManager.gravity.multiplyByScalar(-1))
+                // go.rigidBody.velocity.setTo(0, 0)
                 other.rigidBody.velocity.setTo(0, 0)
               end
             end
@@ -116,8 +124,38 @@ Fengine = class
   end
   
   checkCollision = function(go, other)
+    if not shouldCheckCollision(go, other) then
+      return false
+    end
+
+    return areOverlapping(go, other)
+  end
+
+  shouldCheckCollision = function(go, other)
     return go.position.getDistanceTo(other.position)
       <= go.collider.radius + other.collider.radius
+  end
+
+  areOverlapping = function(go, other)
+    local thisBounds = go.collider.bounds.calculate()
+    local otherBounds = other.collider.bounds.calculate()
+    local collisionBounds = getCollisionBounds(go, other)
+
+    return collisionBounds.left < collisionBounds.right
+      and collisionBounds.bottom < collisionBounds.top
+  end
+
+
+  getCollisionBounds = function(go, other)
+    local firstBounds = go.collider.bounds.calculate()
+    local otherBounds = other.collider.bounds.calculate()
+
+    return object
+      left = max(firstBounds.left, otherBounds.left)
+      right = min(firstBounds.right, otherBounds.right)
+      bottom = max(firstBounds.bottom, otherBounds.bottom)
+      top = min(firstBounds.top, otherBounds.top)
+    end
   end
   
   
