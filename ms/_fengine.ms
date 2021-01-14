@@ -14,6 +14,7 @@ Fengine = class
     this.logger = new Logger()
     this.eventManager = EventManager.getInstance()
     this.inputManager = InputManager.getInstance()
+    this.physicsManager = PhysicsManager.getInstance()
   end
   
   addGameObject = function(name, x, y)
@@ -65,6 +66,7 @@ Fengine = class
   update = function()
     Tweener.update()
     inputManager.update(gameObjects)
+    physicsManager.update(gameObjects)
     // TODO: Make separate loops for handling different components
     for go in gameObjects
       go.update()
