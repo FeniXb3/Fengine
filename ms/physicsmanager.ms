@@ -23,4 +23,31 @@ PhysicsManager = class extends BaseEntity
       go.rigidBody.setVelocity(go.rigidBody.velocity.multiplyByScalar(drag).add(this.gravity))
     end
   end
+
+  raycast = function(origin, direction, distance, name)
+    local targetPoint = origin.add(direction.multiplyByScalar(distance))
+    local matchingObjects = Fengine.getInstance().findAllGameObjects(name)
+    local result = false
+
+    for go in matchingObjects
+      if go.collider.bounds.isPointInside(targetPoint) then
+        result = true
+      end
+    end
+
+    return result
+  end
+  
+  // raycast = function(origin, direction, distance, name)
+  //   local targetPoint = origin.add(direction.multiplyByScalar(distance))
+  //   local matchingObjects = Fengine.getInstance().findAllGameObjects(name)
+
+  //   for go in matchingObjects
+  //     if go.collider.bounds.isPointInside(targetPoint) then
+  //       return true
+  //     end
+  //   end
+
+  //   return false
+  // end
 end

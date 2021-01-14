@@ -8,7 +8,7 @@ game210114 = object
     ground.addColliderOnSprite()
 
     local ground = engine.addGameObject("ground")
-    ground.setPosition(Vector2.make(screen.bounds.left*0.5, 0))
+    ground.setPosition(Vector2.make(screen.bounds.left*0.5, -20))
     ground.addSprite("ground")
     ground.addColliderOnSprite()
 
@@ -31,22 +31,37 @@ game210114 = object
     player.addSprite("player1")
     player.addColliderOnSprite()
     player.addRigidBody()
-    //   .setVelocity(Vector2.make(3, 5))
 
     player.addInputHandler()
       .reactOn("jump", "press", function()
-        this.gameObject.position.changeBy(Vector2.make(0, 1))
-        this.gameObject.rigidBody.velocity.changeBy(Vector2.make(0, 5))
+        if this.gameObject.rigidBody.grounded then
+          this.gameObject.position.changeBy(Vector2.make(0, 1))
+          this.gameObject.rigidBody.velocity.changeBy(Vector2.make(0, 5))
+        end
       end)
       .reactOn("move_right", "hold", function()
-        local currentVelocity = this.gameObject.rigidBody.velocity
-        this.gameObject.rigidBody.setVelocity(Vector2.make(2, currentVelocity.y))
+        if this.gameObject.rigidBody.grounded then
+          local currentVelocity = this.gameObject.rigidBody.velocity
+          this.gameObject.rigidBody.setVelocity(Vector2.make(3, currentVelocity.y))
+        end
       end)
       .reactOn("move_left", "hold", function()
-        local currentVelocity = this.gameObject.rigidBody.velocity
-        this.gameObject.rigidBody.setVelocity(Vector2.make(-2, currentVelocity.y))
+        if this.gameObject.rigidBody.grounded then
+          local currentVelocity = this.gameObject.rigidBody.velocity
+          this.gameObject.rigidBody.setVelocity(Vector2.make(-3, currentVelocity.y))
+        end
       end)
 
+      local raycastLine = engine.addGameObject("raycastLine")
+      raycastLine.addLine(player.position, Vector2.make(0,0), "green")
+
+      player.addChild(raycastLine)
+
+      player.onUpdate = function()
+        this.rigidBody.grounded = PhysicsManager.getInstance().raycast(this.position, Vector2.make(0, -1), 10, "ground")
+        local targetPoint = this.position.add(Vector2.make(0, -1).multiplyByScalar(10))
+        this.children[0].renderable.finish = targetPoint
+      end
     
       engine.inputManager.remap("jump", "SPACE")
       engine.inputManager.remap("move_right", "RIGHT")

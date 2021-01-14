@@ -63,6 +63,21 @@ Fengine = class
     return result
   end  
   
+  findAllGameObjects = function(name)
+    local result = []
+    for go in gameObjects
+      if go.name == name then
+        result.push(go)
+      end
+    end
+    
+    if not result.length then
+      logger.logError("The game object <" +name + "> does not exist.")
+    end
+    
+    return result
+  end  
+  
   update = function()
     Tweener.update()
     inputManager.update(gameObjects)
@@ -76,8 +91,26 @@ Fengine = class
         
         if go.collider and go.rigidBody then
           for other in gameObjects
-            if other != go and other.enabled and other.collider and checkCollision(go, other) then
-              
+            if not (other != go and other.enabled and other.collider) then
+              continue
+            end
+
+            if not checkCollision(go, other) then
+              if go.collider.collidingObjects.contains(other) then
+                go.collider.collidingObjects.removeElement(other)
+                go.collider.onCollisionExit(other)
+              end
+              if other.collider.collidingObjects.contains(go) then
+                other.collider.collidingObjects.removeElement(go)
+                other.collider.onCollisionExit(go)
+              end
+            else
+              if not go.collider.collidingObjects.contains(other) then
+                go.collider.collidingObjects.push(other)
+              end
+              if not other.collider.collidingObjects.contains(go) then
+                other.collider.collidingObjects.push(go)
+              end
               // TODO: Fix it to not fire collision events twice
               go.collider.onCollision(other)
               other.collider.onCollision(go)
@@ -85,7 +118,7 @@ Fengine = class
               // TODO: Handle bounce on collision
               if not go.collider.isTrigger and not other.collider.isTrigger then
                 local velocity = go.rigidBody.velocity
-                local reverse = velocity.multiplyByScalar(-0.4).divideByScalar(velocity.getLength())
+                local reverse = velocity.multiplyByScalar(-0.3).divideByScalar(velocity.getLength())
 
                 while checkCollision(go, other)
                   go.position.changeBy(reverse)
