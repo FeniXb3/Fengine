@@ -74,8 +74,11 @@ PhysicsManager = class extends BaseEntity
               local velocity = go.rigidBody.velocity
               local reverse = velocity.multiplyByScalar(-1).divideByScalar(velocity.getLength())
 
-              while checkCollision(go, other)
+              // TODO: Make it more generic. It should help avoid timeouts here
+              local loopIndex = 0
+              while checkCollision(go, other) and loopIndex < 10
                 go.position.changeBy(reverse)
+                loopIndex += 1
               end
 
               if not other.rigidBody then
