@@ -7,10 +7,10 @@ game210115 = object
     prepareGround()
 
     local target = engine.addGameObject("target")
-    target.setPosition(Vector2.make(screen.bounds.right*0.7, baseY))
+    target.setPosition(Vector2.make(-20, screen.bounds.bottom*0.9))
     target.addSprite("target")
     target.addColliderOnSprite().setIsTrigger(true).setOnCollision(function(other)
-      if other.name == "player" then
+      if other.name == "train" then
         triggerWin()
       end
     end)
@@ -47,8 +47,8 @@ game210115 = object
   end
 
   addMovementTo = function(go)
-    go.jumpPower = 4
-    go.moveSpeed = 1
+    go.jumpPower = 5
+    go.moveSpeed = 1.5
     go.jump = function()
       if this.gameObject.rigidBody.grounded then
         this.gameObject.rigidBody.velocity.changeBy(Vector2.make(0, gameObject.jumpPower))
@@ -81,7 +81,7 @@ game210115 = object
 
   prepareGround = function()
     makeSinglePlatformAt(Vector2.make(screen.bounds.left, screen.bounds.bottom+baseY))
-    makeSinglePlatformAt(Vector2.make(screen.bounds.left*0.4, screen.bounds.bottom*0.7+baseY))
+    makeSinglePlatformAt(Vector2.make(screen.bounds.left*0.4, screen.bounds.bottom*0.7+baseY), Vector2.make(0.7, 1))
     makeSinglePlatformAt(Vector2.make(screen.bounds.right*0.39, screen.bounds.bottom+baseY), Vector2.make(2.5, 1))
   end
 
