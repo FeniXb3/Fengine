@@ -76,9 +76,12 @@ PhysicsManager = class extends BaseEntity
                 go.position.changeBy(reverse)
               end
 
-              go.rigidBody.velocity.setTo(physicsManager.gravity.multiplyByScalar(-1))
-              // go.rigidBody.velocity.setTo(0, 0)
-              other.rigidBody.velocity.setTo(0, 0)
+              if not other.rigidBody then
+                go.rigidBody.velocity.setTo(physicsManager.gravity.multiplyByScalar(-1))
+              else
+                local force = go.rigidBody.velocity.multiplyByScalar(go.rigidBody.mass)
+                other.rigidBody.addForce(force)
+              end
             end
           end
         end

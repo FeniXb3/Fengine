@@ -34,4 +34,9 @@ RigidBody = class extends BaseEntity
       velocity.setTo(Vector2(0,0))
     end
   end
+
+  addForce = function(value)
+    velocity.changeBy(value.divideByScalar(mass))
+    return this
+  end
 end
