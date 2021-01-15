@@ -32,6 +32,14 @@ game210115 = object
     engine.inputManager.remap("jump", "SPACE")
     engine.inputManager.remap("move_right", "RIGHT")
     engine.inputManager.remap("move_left", "LEFT")
+
+    local gameplay = engine.addGameObject("gameplay")
+    gameplay.reset = function()
+      game210115.init(Fengine.getInstance())
+    end
+    gameplay.addInputHandler()
+      .reactOn("reset", "press", gameplay.reset)
+    engine.inputManager.remap("reset", "R")
     
     local winText = engine.addWinTextObject()
     winText.position.setTo(Vector2.make(0, 40))
