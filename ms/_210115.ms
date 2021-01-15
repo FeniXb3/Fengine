@@ -15,7 +15,7 @@ game210115 = object
       end
     end)
 
-    local train = makePhysicsSpriteAt("train", "train", Vector2.make(40, baseY), 100)
+    local train = makePhysicsSpriteAt("train", "train", Vector2.make(40, baseY), 10)
     train.onUpdate = function()
       rigidBody.checkGrounded()
     end

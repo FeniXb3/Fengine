@@ -39,4 +39,9 @@ RigidBody = class extends BaseEntity
     velocity.changeBy(value.divideByScalar(mass))
     return this
   end
+
+  applyGravity = function(value)
+    velocity.changeBy(value)
+    return this
+  end
 end

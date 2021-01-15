@@ -24,14 +24,16 @@ PhysicsManager = class extends BaseEntity
       local gravityForce = this.gravity.multiplyByScalar(go.rigidBody.mass) 
       local targetVelocity = go.rigidBody.velocity.multiplyByScalar(drag)
       
-      if not go.rigidBody.grounded then
-        targetVelocity = targetVelocity.add(this.gravity)
-      end
       if targetVelocity.getLength() < velocityDelta then
         targetVelocity = Vector2.make(0, 0)
       end
 
+
       go.rigidBody.setVelocity(targetVelocity)
+
+      if not go.rigidBody.grounded then
+        go.rigidBody.applyGravity(gravityForce)
+      end
 
     end
     moveAndHandleCollisions(gameObjects)
