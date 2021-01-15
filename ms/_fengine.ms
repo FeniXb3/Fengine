@@ -87,50 +87,6 @@ Fengine = class
       go.update()
       if go.enabled then
         checkTouch(go)
-        move(go)
-        
-        if go.collider and go.rigidBody then
-          for other in gameObjects
-            if not (other != go and other.enabled and other.collider) then
-              continue
-            end
-
-            if not checkCollision(go, other) then
-              if go.collider.collidingObjects.contains(other) then
-                go.collider.collidingObjects.removeElement(other)
-                go.collider.onCollisionExit(other)
-              end
-              if other.collider.collidingObjects.contains(go) then
-                other.collider.collidingObjects.removeElement(go)
-                other.collider.onCollisionExit(go)
-              end
-            else
-              if not go.collider.collidingObjects.contains(other) then
-                go.collider.collidingObjects.push(other)
-              end
-              if not other.collider.collidingObjects.contains(go) then
-                other.collider.collidingObjects.push(go)
-              end
-              // TODO: Fix it to not fire collision events twice
-              go.collider.onCollision(other)
-              other.collider.onCollision(go)
-              
-              // TODO: Handle bounce on collision
-              if not go.collider.isTrigger and not other.collider.isTrigger then
-                local velocity = go.rigidBody.velocity
-                local reverse = velocity.multiplyByScalar(-1).divideByScalar(velocity.getLength())
-
-                while checkCollision(go, other)
-                  go.position.changeBy(reverse)
-                end
-
-                go.rigidBody.velocity.setTo(physicsManager.gravity.multiplyByScalar(-1))
-                // go.rigidBody.velocity.setTo(0, 0)
-                other.rigidBody.velocity.setTo(0, 0)
-              end
-            end
-          end
-        end
       end
     end
   end
@@ -146,52 +102,8 @@ Fengine = class
         go.touchable.onRelease()
       end
     end
-  end  
-  
-  move = function(go)
-    if not go.rigidBody then
-      return
-    end 
-    
-    go.position.changeBy(go.rigidBody.velocity)
-  end
-  
-  checkCollision = function(go, other)
-    if not shouldCheckCollision(go, other) then
-      return false
-    end
-
-    return areOverlapping(go, other)
   end
 
-  shouldCheckCollision = function(go, other)
-    return go.position.getDistanceTo(other.position)
-      <= go.collider.radius + other.collider.radius
-  end
-
-  areOverlapping = function(go, other)
-    local thisBounds = go.collider.bounds.calculate()
-    local otherBounds = other.collider.bounds.calculate()
-    local collisionBounds = getCollisionBounds(go, other)
-
-    return collisionBounds.left < collisionBounds.right
-      and collisionBounds.bottom < collisionBounds.top
-  end
-
-
-  getCollisionBounds = function(go, other)
-    local firstBounds = go.collider.bounds.calculate()
-    local otherBounds = other.collider.bounds.calculate()
-
-    return object
-      left = max(firstBounds.left, otherBounds.left)
-      right = min(firstBounds.right, otherBounds.right)
-      bottom = max(firstBounds.bottom, otherBounds.bottom)
-      top = min(firstBounds.top, otherBounds.top)
-    end
-  end
-  
-  
   draw = function()
     clearScreen()
     for go in gameObjects
