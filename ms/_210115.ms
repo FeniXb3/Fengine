@@ -41,7 +41,6 @@ game210115 = object
     go.moveSpeed = 1
     go.jump = function()
       if this.gameObject.rigidBody.grounded then
-        this.gameObject.position.changeBy(Vector2.make(0, 1))
         this.gameObject.rigidBody.velocity.changeBy(Vector2.make(0, gameObject.jumpPower))
       end
     end
