@@ -16,7 +16,14 @@ Fengine = class
     this.inputManager = InputManager.getInstance()
     this.physicsManager = PhysicsManager.getInstance()
   end
-  
+
+  reset = function()
+    this.gameObjects = []
+    this.eventManager.reset()
+    this.inputManager.reset()
+    Tweener.reset()
+  end
+
   addGameObject = function(name, x, y)
     local go = new GameObject(name, x, y)
     gameObjects.push(go)

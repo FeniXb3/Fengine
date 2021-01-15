@@ -1,5 +1,6 @@
 game210115 = object
   init = function(engine)
+    engine.reset()
     screen.bounds = engine.getScreenBounds()
 
     prepareGround()

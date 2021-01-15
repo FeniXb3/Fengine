@@ -12,6 +12,11 @@ InputManager = class extends BaseEntity
     this.keyMapping = getKeyMapping()
   end
 
+  reset = function()
+    this.devices = generateDevices()
+    this.keyMapping = getKeyMapping()
+  end
+
   generateDevices = function()
     return object
       get_keyboard = function()

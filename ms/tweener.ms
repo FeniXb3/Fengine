@@ -1,6 +1,10 @@
 Tweener = class extends BaseEntity
   tweens = object end
 
+  reset = function()
+    this.tweens = object end
+  end
+
   to = function(theObject, getter, setter, targetValue, duration)
     local tween = new Tween(theObject, getter, setter, targetValue, duration)
     // TODO: Handle this in general way

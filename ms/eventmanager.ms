@@ -10,6 +10,10 @@ EventManager = class extends BaseEntity
   constructor = function()
     this.events = object end
   end
+
+  reset = function()
+    this.events = object end
+  end
   
   addListener = function(eventType, listenerName, target)
     if not hasEvent(eventType) then
