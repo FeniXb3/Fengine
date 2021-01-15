@@ -1,12 +1,13 @@
 game210115 = object
   init = function(engine)
     engine.reset()
+    baseY = 70
     screen.bounds = engine.getScreenBounds()
 
     prepareGround()
 
     local target = engine.addGameObject("target")
-    target.setPosition(Vector2.make(screen.bounds.right*0.7, 0))
+    target.setPosition(Vector2.make(screen.bounds.right*0.7, baseY))
     target.addSprite("target")
     target.addColliderOnSprite().setIsTrigger(true).setOnCollision(function(other)
       if other.name == "player" then
@@ -14,12 +15,12 @@ game210115 = object
       end
     end)
 
-    local train = makePhysicsSpriteAt("train", "train", Vector2.make(0, 0))
+    local train = makePhysicsSpriteAt("train", "train", Vector2.make(40, baseY), 100)
     train.onUpdate = function()
       rigidBody.checkGrounded()
     end
 
-    local player = makePhysicsSpriteAt("player", "player1", Vector2.make(screen.bounds.left, 0))
+    local player = makePhysicsSpriteAt("player", "player1", Vector2.make(screen.bounds.left, baseY))
     player.onUpdate = function()
       if position.y < screen.bounds.bottom then
         position.setTo(startingPosition)
@@ -58,27 +59,29 @@ game210115 = object
       .reactOn("move_left", "hold", go.moveLeft)
   end
 
-  makePhysicsSpriteAt = function(name, spriteName, startingPosition)
+  makePhysicsSpriteAt = function(name, spriteName, startingPosition, mass=1)
     local go = engine.addGameObject(name)
     go.startingPosition = startingPosition
     go.setPosition(startingPosition)
     go.addSprite(spriteName)
     go.addColliderOnSprite()
     go.addRigidBody()
+      .setMass(mass)
 
     return go
   end
 
   prepareGround = function()
-    makeSinglePlatformAt(Vector2.make(20, screen.bounds.bottom))
-    makeSinglePlatformAt(Vector2.make(screen.bounds.left*0.4, screen.bounds.bottom*0.7))
-    makeSinglePlatformAt(Vector2.make(screen.bounds.left, screen.bounds.bottom))
+    makeSinglePlatformAt(Vector2.make(screen.bounds.left, screen.bounds.bottom+baseY))
+    makeSinglePlatformAt(Vector2.make(screen.bounds.left*0.4, screen.bounds.bottom*0.7+baseY))
+    makeSinglePlatformAt(Vector2.make(screen.bounds.right*0.39, screen.bounds.bottom+baseY), Vector2.make(2.5, 1))
   end
 
-  makeSinglePlatformAt = function(position)
+  makeSinglePlatformAt = function(position, scale=Vector2.make(1, 1))
     local ground = engine.addGameObject("ground")
     ground.setPosition(position)
     ground.addSprite("ground")
+      .withScale(scale)
     ground.addColliderOnSprite()
   end
 end
