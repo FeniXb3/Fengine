@@ -9,8 +9,10 @@ PhysicsManager = class extends BaseEntity
 
   constructor = function()
     this.metersPerUnit = 100
-    this.gravity = Vector2.make(0, -9.81).divideByScalar(metersPerUnit)
-    this.drag = 0.99
+    this.fps = 60
+    this.gravity = Vector2.make(0, -9.81).divideByScalar(fps)
+    this.drag = 0.98
+    this.velocityDelta = 0.00001
   end
 
   update = function(gameObjects)
@@ -20,7 +22,16 @@ PhysicsManager = class extends BaseEntity
       end
 
       local gravityForce = this.gravity.multiplyByScalar(go.rigidBody.mass) 
-      go.rigidBody.setVelocity(go.rigidBody.velocity.multiplyByScalar(drag).add(this.gravity))
+      local targetVelocity = go.rigidBody.velocity.multiplyByScalar(drag)
+      
+      if not go.rigidBody.grounded then
+        targetVelocity = targetVelocity.add(this.gravity)
+      end
+      if targetVelocity.getLength() < velocityDelta then
+        targetVelocity = Vector2.make(0, 0)
+      end
+
+      go.rigidBody.setVelocity(targetVelocity)
     end
   end
 

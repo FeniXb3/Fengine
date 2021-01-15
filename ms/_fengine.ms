@@ -118,7 +118,7 @@ Fengine = class
               // TODO: Handle bounce on collision
               if not go.collider.isTrigger and not other.collider.isTrigger then
                 local velocity = go.rigidBody.velocity
-                local reverse = velocity.multiplyByScalar(-0.3).divideByScalar(velocity.getLength())
+                local reverse = velocity.multiplyByScalar(-1).divideByScalar(velocity.getLength())
 
                 while checkCollision(go, other)
                   go.position.changeBy(reverse)
