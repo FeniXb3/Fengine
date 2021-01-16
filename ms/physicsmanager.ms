@@ -43,49 +43,51 @@ PhysicsManager = class extends BaseEntity
   moveAndHandleCollisions = function(gameObjects)
     for go in gameObjects
       move(go)
-      if go.collider and go.rigidBody then
-        for other in gameObjects
-          if not (other != go and other.enabled and other.collider) then
-            continue
+      if not (go.collider and go.rigidBody) then
+        continue
+      end
+
+      for other in gameObjects
+        if not (other != go and other.enabled and other.collider) then
+          continue
+        end
+
+        if not checkCollision(go, other) then
+          if go.collider.collidingObjects.contains(other) then
+            go.collider.collidingObjects.removeElement(other)
+            go.collider.onCollisionExit(other)
+          end
+          if other.collider.collidingObjects.contains(go) then
+            other.collider.collidingObjects.removeElement(go)
+            other.collider.onCollisionExit(go)
+          end
+        else
+          if not go.collider.collidingObjects.contains(other) then
+            go.collider.collidingObjects.push(other)
+            go.collider.onCollision(other)
+          end
+          if not other.collider.collidingObjects.contains(go) then
+            other.collider.collidingObjects.push(go)
+            other.collider.onCollision(go)
           end
 
-          if not checkCollision(go, other) then
-            if go.collider.collidingObjects.contains(other) then
-              go.collider.collidingObjects.removeElement(other)
-              go.collider.onCollisionExit(other)
-            end
-            if other.collider.collidingObjects.contains(go) then
-              other.collider.collidingObjects.removeElement(go)
-              other.collider.onCollisionExit(go)
-            end
-          else
-            if not go.collider.collidingObjects.contains(other) then
-              go.collider.collidingObjects.push(other)
-              go.collider.onCollision(other)
-            end
-            if not other.collider.collidingObjects.contains(go) then
-              other.collider.collidingObjects.push(go)
-              other.collider.onCollision(go)
-            end
-            
-            // TODO: Handle bounce on collision
-            if not go.collider.isTrigger and not other.collider.isTrigger then
-              local velocity = go.rigidBody.velocity
-              local reverse = velocity.multiplyByScalar(-1).divideByScalar(velocity.getLength())
+          // TODO: Handle bounce on collision
+          if not go.collider.isTrigger and not other.collider.isTrigger then
+            local velocity = go.rigidBody.velocity
+            local reverse = velocity.multiplyByScalar(-1).divideByScalar(velocity.getLength())
 
-              // TODO: Make it more generic. It should help avoid timeouts here
-              local loopIndex = 0
-              while checkCollision(go, other) and loopIndex < 10
-                go.position.changeBy(reverse)
-                loopIndex += 1
-              end
+            // TODO: Make it more generic. It should help avoid timeouts here
+            local loopIndex = 0
+            while checkCollision(go, other) and loopIndex < 10
+              go.position.changeBy(reverse)
+              loopIndex += 1
+            end
 
-              if not other.rigidBody then
-                go.rigidBody.velocity.setTo(physicsManager.gravity.multiplyByScalar(-1))
-              else
-                local force = go.rigidBody.velocity.multiplyByScalar(go.rigidBody.mass)
-                other.rigidBody.addForce(force)
-              end
+            if not other.rigidBody then
+              go.rigidBody.velocity.setTo(physicsManager.gravity.multiplyByScalar(-1))
+            else
+              local force = go.rigidBody.velocity.multiplyByScalar(go.rigidBody.mass)
+              other.rigidBody.addForce(force)
             end
           end
         end
