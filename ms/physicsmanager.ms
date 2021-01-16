@@ -89,6 +89,12 @@ PhysicsManager = class extends BaseEntity
             else
               local force = go.rigidBody.velocity.multiplyByScalar(go.rigidBody.mass)
               other.rigidBody.addForce(force)
+
+              local coefficient = 0.5
+              local normalForce = gravity.multiplyByScalar(-other.mass)
+              local normalValue = normalForce.getLength()
+              local frictionDirection = force.divideByScalar(force.getLength())
+              //local frictionForce = 
             end
           end
         end
