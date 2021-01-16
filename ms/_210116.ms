@@ -49,15 +49,15 @@ game210116 = object
 
   addMovementTo = function(go)
     go.jumpPower = 5
-    go.moveSpeed = 1.5
+    go.moveSpeed = 0.5
     go.jump = function()
       if this.gameObject.rigidBody.grounded then
-        this.gameObject.rigidBody.velocity.changeBy(Vector2.make(0, gameObject.jumpPower))
+        this.gameObject.rigidBody.addForce(Vector2.make(0, gameObject.jumpPower))
       end
     end
     go.move = function(direction)
       local currentVelocity = this.gameObject.rigidBody.velocity
-      this.gameObject.rigidBody.setVelocity(Vector2.make(gameObject.moveSpeed*direction, currentVelocity.y))
+      this.gameObject.rigidBody.addForce(Vector2.make(gameObject.moveSpeed*direction, 0))
     end
     go.moveLeft = function() this.gameObject.move(-1) end
     go.moveRight = function() this.gameObject.move(1) end
