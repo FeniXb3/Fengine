@@ -31,8 +31,9 @@ PhysicsManager = class extends BaseEntity
 
       go.rigidBody.setVelocity(targetVelocity)
 
-      if not go.rigidBody.grounded then
-        go.rigidBody.applyGravity(gravityForce)
+      go.rigidBody.applyGravity(gravityForce)
+      if go.rigidBody.grounded then
+        go.rigidBody.applyGravity(gravityForce.multiplyByScalar(-1))
       end
 
     end
