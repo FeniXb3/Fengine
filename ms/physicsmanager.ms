@@ -61,13 +61,12 @@ PhysicsManager = class extends BaseEntity
           else
             if not go.collider.collidingObjects.contains(other) then
               go.collider.collidingObjects.push(other)
+              go.collider.onCollision(other)
             end
             if not other.collider.collidingObjects.contains(go) then
               other.collider.collidingObjects.push(go)
+              other.collider.onCollision(go)
             end
-            // TODO: Fix it to not fire collision events twice
-            go.collider.onCollision(other)
-            other.collider.onCollision(go)
             
             // TODO: Handle bounce on collision
             if not go.collider.isTrigger and not other.collider.isTrigger then
