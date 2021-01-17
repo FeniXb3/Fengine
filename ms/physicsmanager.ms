@@ -79,7 +79,7 @@ PhysicsManager = class extends BaseEntity
 
             // TODO: Make it more generic. It should help avoid timeouts here
             local loopIndex = 0
-            while checkCollision(go, other) and loopIndex < 10
+            while checkCollision(go, other) and loopIndex < 1000
               go.position.changeBy(reverse)
               loopIndex += 1
             end
@@ -91,10 +91,17 @@ PhysicsManager = class extends BaseEntity
               other.rigidBody.addForce(force)
 
               local coefficient = 0.5
-              local normalForce = gravity.multiplyByScalar(-other.mass)
+              local normalForce = gravity.multiplyByScalar(-other.rigidBody.mass)
               local normalValue = normalForce.getLength()
-              local frictionDirection = force.divideByScalar(force.getLength())
-              //local frictionForce = 
+              local frictionDirection = force.divideByScalar(-force.getLength())
+              local frictionForce = frictionDirection.multiplyByScalar(normalValue*coefficient)
+              
+              if frictionForce.getLength() > force.getLength() then
+                frictionForce = force.multiplyByScalar(-1)
+                print(frictionForce)
+              end
+              other.rigidBody.addForce(frictionForce)
+              // print(frictionForce)
             end
           end
         end

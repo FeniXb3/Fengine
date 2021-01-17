@@ -7,7 +7,7 @@ game210116 = object
     prepareGround()
 
     local target = engine.addGameObject("target")
-    target.setPosition(Vector2.make(-20, screen.bounds.bottom*0.9))
+    target.setPosition(Vector2.make(screen.bounds.right, 0))
     target.addSprite("target")
     target.addColliderOnSprite().setIsTrigger(true).setOnCollision(function(other)
       if other.name == "train" then
@@ -15,8 +15,12 @@ game210116 = object
       end
     end)
 
-    local train = makePhysicsSpriteAt("train", "train", Vector2.make(40, baseY), 10)
+    local train = makePhysicsSpriteAt("train", "train", Vector2.make(-10, baseY), 20)
     train.onUpdate = function()
+      rigidBody.checkGrounded()
+    end
+    local item = makePhysicsSpriteAt("item1", "item1", Vector2.make(50, baseY), 25)
+    item.onUpdate = function()
       rigidBody.checkGrounded()
     end
 
@@ -57,7 +61,9 @@ game210116 = object
     end
     go.move = function(direction)
       local currentVelocity = this.gameObject.rigidBody.velocity
-      this.gameObject.rigidBody.addForce(Vector2.make(gameObject.moveSpeed*direction, 0))
+      if currentVelocity.getLength() < 2 then
+        this.gameObject.rigidBody.addForce(Vector2.make(gameObject.moveSpeed*direction, 0))
+      end  
     end
     go.moveLeft = function() this.gameObject.move(-1) end
     go.moveRight = function() this.gameObject.move(1) end
@@ -81,9 +87,10 @@ game210116 = object
   end
 
   prepareGround = function()
-    makeSinglePlatformAt(Vector2.make(screen.bounds.left, screen.bounds.bottom+baseY))
-    makeSinglePlatformAt(Vector2.make(screen.bounds.left*0.4, screen.bounds.bottom*0.7+baseY), Vector2.make(0.7, 1))
-    makeSinglePlatformAt(Vector2.make(screen.bounds.right*0.39, screen.bounds.bottom+baseY), Vector2.make(2.5, 1))
+    // makeSinglePlatformAt(Vector2.make(screen.bounds.left, screen.bounds.bottom+baseY))
+    // makeSinglePlatformAt(Vector2.make(screen.bounds.left*0.4, screen.bounds.bottom*0.7+baseY), Vector2.make(0.7, 1))
+    // makeSinglePlatformAt(Vector2.make(screen.bounds.right*0.39, screen.bounds.bottom+baseY), Vector2.make(2.5, 1))
+    makeSinglePlatformAt(Vector2.make(0, screen.bounds.bottom+baseY), Vector2.make(7, 1))
   end
 
   makeSinglePlatformAt = function(position, scale=Vector2.make(1, 1))
