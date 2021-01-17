@@ -87,10 +87,9 @@ game210116 = object
   end
 
   prepareGround = function()
-    // makeSinglePlatformAt(Vector2.make(screen.bounds.left, screen.bounds.bottom+baseY))
-    // makeSinglePlatformAt(Vector2.make(screen.bounds.left*0.4, screen.bounds.bottom*0.7+baseY), Vector2.make(0.7, 1))
-    // makeSinglePlatformAt(Vector2.make(screen.bounds.right*0.39, screen.bounds.bottom+baseY), Vector2.make(2.5, 1))
-    makeSinglePlatformAt(Vector2.make(0, screen.bounds.bottom+baseY), Vector2.make(7, 1))
+    for x = screen.bounds.left to screen.bounds.right by 65
+      makeSinglePlatformAt(Vector2.make(x, screen.bounds.bottom+baseY))
+    end
   end
 
   makeSinglePlatformAt = function(position, scale=Vector2.make(1, 1))
