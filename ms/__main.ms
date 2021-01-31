@@ -1,6 +1,6 @@
 init = function()
   engine =  Fengine.getInstance()
-  game210116.init(engine)
+  gamePirateBay.init(engine)
 end
 
 update = function()

@@ -1,5 +1,15 @@
 gamePirateBay = object
   init = function(engine)
+    engine.reset()
+    local gameplay = engine.addGameObject("gameplay")
+    gameplay.game = this
+    gameplay.reset = function()
+      gameObject.game.init(Fengine.getInstance())
+    end
+    gameplay.addInputHandler()
+      .reactOn("reset", "press", gameplay.reset)
+    engine.inputManager.remap("reset", "R")
+
     screen.bounds = engine.getScreenBounds()
     prepareSea()
     prepareBoat()
