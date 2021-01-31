@@ -40,6 +40,18 @@ gamePirateBay = object
     end
     engine.eventManager.addListener("startWinningSequence", "onWinningSequence", fader)
 
+    fader.onLost = function(value)
+      setEnabled(true)
+      renderable.setAlpha(0)
+      Tweener.to(renderable, "getAlpha", "setAlpha", 0.5, 1)
+        .setOnFinished(function()
+          local lostText = Fengine.getInstance().addGameObject("lostText")
+          lostText.addText("You lost!", 30, "white")
+            .withShadow()
+        end)
+    end
+    engine.eventManager.addListener("lost", "onLost", fader)
+
     prepareBase()
     prepareCollectedFish()
     prepareDeliveredFish()
@@ -95,6 +107,14 @@ gamePirateBay = object
       .addClip("sail")
       .addClip("turn_left")
       .addClip("turn_right")
+    boat.addColliderOnRenderable()
+      .setOnCollision(function(other)
+        gameObject.rigidBody = 0
+        Tweener.to(gameObject.renderable, "getScale", "setScale", Vector2.make(0, 0), 1)
+        Fengine.getInstance().eventManager.triggerEvent("lost", true)
+      end)
+    boat.addRigidBody()
+      .setMass(0)
 
     boat.rotate = function(data)
       local targetAngle = position.getAngleTo(data)-90
