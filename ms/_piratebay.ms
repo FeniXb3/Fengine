@@ -12,7 +12,8 @@ gamePirateBay = object
 
     screen.bounds = engine.getScreenBounds()
     prepareSea()
-    prepareBoat()
+    prepareBoat("boat_1", "boat", Vector2.make(40, 30))
+    prepareBoat("boat_2", "boat", Vector2.make(-40, -30))
     fader = engine.addGameObject("fader")
     fader.addRectangle().withFill("black")
     fader.setEnabled(false)
@@ -87,9 +88,10 @@ gamePirateBay = object
     end)
   end
 
-  prepareBoat = function()
-    local boat = engine.addGameObject("boat")
-    boat.addAnimator("boat")
+  prepareBoat = function(name, spriteName, position=Vector2.makeZero())
+    local boat = engine.addGameObject(name)
+    boat.position.setTo(position)
+    boat.addAnimator(spriteName)
       .addClip("sail")
       .addClip("turn_left")
       .addClip("turn_right")
