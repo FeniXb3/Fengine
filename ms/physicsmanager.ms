@@ -153,7 +153,7 @@ PhysicsManager = class extends BaseEntity
 
   raycast = function(origin, direction, distance, name)
     local targetPoint = origin.add(direction.multiplyByScalar(distance))
-    local matchingObjects = Fengine.getInstance().findAllGameObjects(name)
+    local matchingObjects = if not name then Fengine.getInstance().gameObjects else Fengine.getInstance().findAllGameObjects(name) end
     local result = false
 
     for go in matchingObjects

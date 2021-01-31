@@ -22,16 +22,16 @@ RigidBody = class extends BaseEntity
     local rightOrigin = Vector2.make(bounds.right, bounds.bottom)
     local raycastLength = 1
 
-    if PhysicsManager.getInstance().raycast(leftOrigin, Vector2.make(0, -1), raycastLength, "ground") then
+    if PhysicsManager.getInstance().raycast(leftOrigin, Vector2.make(0, -1), raycastLength) then
       grounded = true
-    elsif PhysicsManager.getInstance().raycast(rightOrigin, Vector2.make(0, -1), raycastLength, "ground") then
+    elsif PhysicsManager.getInstance().raycast(rightOrigin, Vector2.make(0, -1), raycastLength) then
       grounded = true
     else
       grounded = false
     end
 
     if not wasGrounded and grounded then
-      velocity.setTo(Vector2(0,0))
+    //  velocity.setTo(Vector2(0,0))
     end
   end
 
