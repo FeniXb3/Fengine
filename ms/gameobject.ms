@@ -131,7 +131,14 @@ GameObject = class extends BaseEntity
         + "Provided values: size=" + size.getInfo() + " scale=" + scale.getInfo() + " anchor="+anchor.getInfo())
     end
   end
-  
+
+  addColliderOnRenderable  = function(onCollision)
+    if renderable then
+      return addCollider(position, parent.position, renderable.size, renderable.scale, renderable.anchor, onCollision)
+    else
+      logError("The object <" + name + "> has no renderable.")
+    end
+  end
   
   addColliderOnSprite = function(onCollision)
     if renderable.class == Sprite then
