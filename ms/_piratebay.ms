@@ -1,6 +1,7 @@
 gamePirateBay = object
   init = function(engine)
     engine.reset()
+    local multiplier = storage.get("level_number") + 1
     local gameplay = engine.addGameObject("gameplay")
     gameplay.game = this
     gameplay.reset = function()
@@ -9,11 +10,24 @@ gamePirateBay = object
     gameplay.addInputHandler()
       .reactOn("reset", "press", gameplay.reset)
     engine.inputManager.remap("reset", "R")
+    engine.inputManager.remap("reset", "ENTER")
 
     screen.bounds = engine.getScreenBounds()
     prepareSea()
-    prepareBoat("boat_1", "boat", Vector2.make(40, 30))
-    prepareBoat("boat_2", "boat", Vector2.make(-40, -30))
+
+    local quadrants = [
+      Vector2.make(1, 1),
+      Vector2.make(1, -1),
+      Vector2.make(-1, -1),
+      Vector2.make(-1, 1)
+    ]
+
+    for i = 1 to multiplier
+      local q = quadrants[i%quadrants.length]
+      local offset = ceil(i / quadrants.length)
+      prepareBoat("boat_"+i, "boat", Vector2.make(offset*40*q.x, offset*40*q.y))
+    end
+
     fader = engine.addGameObject("fader")
     fader.addRectangle().withFill("black")
     fader.setEnabled(false)
@@ -48,6 +62,12 @@ gamePirateBay = object
           local lostText = Fengine.getInstance().addGameObject("lostText")
           lostText.addText("You lost!", 30, "white")
             .withShadow()
+
+        local resetText = Fengine.getInstance().addGameObject("resetText")
+        resetText.setPosition(Vector2.make(0, -25))
+        resetText.addText("Press R to restart.", 15, "white")
+          .withShadow()
+          storage.set("level_number", 0)
         end)
     end
     engine.eventManager.addListener("lost", "onLost", fader)
@@ -56,7 +76,8 @@ gamePirateBay = object
     prepareCollectedFish()
     prepareDeliveredFish()
 
-    engine.addWinTextObject()
+    local levelNumber = storage.get("level_number") + 1
+    engine.addWinTextObject("You win level " + levelNumber+"!")
   end
 
   prepareSea = function()
@@ -90,6 +111,12 @@ gamePirateBay = object
         Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", 3)
         play("flag")
         triggerWin()
+        local continueText = Fengine.getInstance().addGameObject("continueText")
+        continueText.setPosition(Vector2.make(0, -25))
+        continueText.addText("Well done! Press ENTER to continue...", 15, "white")
+          .withShadow()
+        local levelNumber = storage.get("level_number")
+        storage.set("level_number", levelNumber+1)
       end)
     end
 
@@ -167,7 +194,7 @@ gamePirateBay = object
 
     local goToBase = function(data)
       local distance = this.position.getDistanceTo(data)
-      local maxDistance = 100
+      local maxDistance = 80
 
       if distance <= maxDistance then
         local rotationDuration = rotate(data)
@@ -186,7 +213,7 @@ gamePirateBay = object
 
     local goToSea = function(data)
       local distance = this.position.getDistanceTo(data)
-      local maxDistance = 100
+      local maxDistance = 80
 
       if distance <= maxDistance then
         local rotationDuration = rotate(data)
@@ -256,8 +283,10 @@ gamePirateBay = object
       end
     end
 
+    local multiplier = storage.get("level_number") + 1
+
     local collectedFish = prepareActualExpectedWithText(
-      "collectedFish", 5,"Collected: ", "collectFish",
+      "collectedFish", 4*multiplier,"Collected: ", "collectFish",
       Vector2.make(screen.bounds.left, screen.bounds.top), Vector2.make(-1, 1), false)
     collectedFish.collectFish = collectFish
     collectedFish.passFish = passFish
@@ -270,8 +299,10 @@ gamePirateBay = object
       Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", 1)
     end
 
+    local multiplier = storage.get("level_number") + 1
+
     local deliveredFish = prepareActualExpectedWithText(
-      "deliveredFish", 1,"Delivered: ", "deliverFish",
+      "deliveredFish", 6*multiplier,"Delivered: ", "deliverFish",
       Vector2.make(screen.bounds.left, screen.bounds.bottom),
       Vector2.make(-1, -1), true, onDeliveredFishReached)
     deliveredFish.deliverFish = function(data)
