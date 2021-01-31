@@ -1,6 +1,6 @@
 Map = class extends Drawable
   constructor = function(name)
-    this.tileMap = maps[name]
+    this.tileMap = maps[name].clone()
     this.mapSize = new Vector2(this.tileMap.width, this.tileMap.height)
     this.blockSize = new Vector2(this.tileMap.block_width, this.tileMap.block_width)
     this.size = this.mapSize.multiply(this.blockSize)
