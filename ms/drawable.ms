@@ -30,6 +30,14 @@ Drawable = class extends BaseEntity
     return this.anchor
   end
 
+  setScale = function(value)
+    this.scale = value
+  end
+
+  getScale = function()
+    return this.scale
+  end
+
   withAlpha = function(alpha)
     this.alpha = alpha
     return this
