@@ -257,7 +257,7 @@ gamePirateBay = object
 
   checkForFish = function(data)
     local map = this.renderable
-    local coords = map.getCoords(touch)
+    local coords = map.getCoords(data)
     local tileName = map.get(coords)
     if tileName.startsWith("fish") then
       local stuffAmount = floor(tileName[tileName.length-1])
