@@ -25,7 +25,8 @@ gamePirateBay = object
     for i = 1 to multiplier
       local q = quadrants[i%quadrants.length]
       local offset = ceil(i / quadrants.length)
-      prepareBoat("boat_"+i, "boat", Vector2.make(offset*40*q.x, offset*40*q.y))
+      local boat = prepareBoat("boat_"+i, "boat", Vector2.make(offset*40*q.x, offset*40*q.y))
+      boat.addChild(prepareCollectedFish("", Vector2.makeZero(), Vector2.makeZero(), i))
     end
 
     fader = engine.addGameObject("fader")
@@ -73,7 +74,7 @@ gamePirateBay = object
     engine.eventManager.addListener("lost", "onLost", fader)
 
     prepareBase()
-    prepareCollectedFish()
+    //prepareCollectedFish()
     prepareDeliveredFish()
 
     local levelNumber = storage.get("level_number") + 1
@@ -205,7 +206,9 @@ gamePirateBay = object
         .setEase("easeInOutCubic")
         .setOnFinished( function(target)
           target.renderable.play("__default__")
-          Fengine.getInstance().eventManager.triggerEvent("passFish")
+          Fengine.getInstance().eventManager.triggerEvent("passFish", object
+            boat = this.theObject
+          end)
         end)
         .setDelay(rotationDuration)
       end
@@ -224,7 +227,10 @@ gamePirateBay = object
         .setEase("easeInOutCubic")
         .setOnFinished( function(target)
           target.renderable.play("__default__")
-          Fengine.getInstance().eventManager.triggerEvent("checkForFish", this.targetValue)
+          Fengine.getInstance().eventManager.triggerEvent("checkForFish", object
+            position = this.targetValue
+            boat = this.theObject
+          end)
         end)
         .setDelay(rotationDuration)
       end
@@ -234,6 +240,8 @@ gamePirateBay = object
     boat.onGoToBase = goToBase
     engine.eventManager.addListener("goToBase", "onGoToBase", boat)
     engine.eventManager.addListener("goToSea", "onGoToSea", boat)
+
+    return boat
   end
 
 
@@ -257,7 +265,7 @@ gamePirateBay = object
 
   checkForFish = function(data)
     local map = this.renderable
-    local coords = map.getCoords(data)
+    local coords = map.getCoords(data.position)
     local tileName = map.get(coords)
     if tileName.startsWith("fish") then
       local stuffAmount = floor(tileName[tileName.length-1])
@@ -266,32 +274,48 @@ gamePirateBay = object
         map = map
         coords = coords
         amount = stuffAmount
+        boat = data.boat
       end)
     end
   end
 
-  prepareCollectedFish = function()
-    local passFish = function()
+  prepareCollectedFish = function(baseText="Collected: ", position=Vector2.make(screen.bounds.left, screen.bounds.top), anchor=Vector2.make(-1, 1), index=0)
+    local passFish = function(data)
       local fishState = this.actualExpected
-      Fengine.getInstance().eventManager.triggerEvent("deliverFish", fishState.actual)
+      if this.parent == data.boat then
+        Fengine.getInstance().eventManager.triggerEvent("deliverFish", object
+          amount = fishState.actual
+          boat = data.boat
+        end)
+      end
     end
 
     local collectFish = function(data)
       local fishState = this.actualExpected
-      if fishState.changeBy(data.amount) then
-        data.map.clearAt(data.coords)
+      if this.parent == data.boat then
+        if fishState.changeBy(data.amount) then
+          data.map.clearAt(data.coords)
+        end
       end
     end
 
-    local multiplier = storage.get("level_number") + 1
+    local onFishDelivered = function(data)
+      local fishState = this.actualExpected
+      if this.parent == data.boat then
+        fishState.changeBy(data.amount)
+      end
+    end
 
     local collectedFish = prepareActualExpectedWithText(
-      "collectedFish", 4*multiplier,"Collected: ", "collectFish",
-      Vector2.make(screen.bounds.left, screen.bounds.top), Vector2.make(-1, 1), false)
+      "collectedFish_"+index, 4, baseText, "collectFish",
+      position, anchor, false)
     collectedFish.collectFish = collectFish
     collectedFish.passFish = passFish
+    collectedFish.onFishDelivered = onFishDelivered
     engine.eventManager.addListener("passFish", "passFish", collectedFish)
-    engine.eventManager.addListener("fishDelivered", "changeBy", collectedFish.actualExpected)
+    engine.eventManager.addListener("fishDelivered", "onFishDelivered", collectedFish)
+
+    return collectedFish
   end
 
   prepareDeliveredFish = function()
@@ -307,8 +331,11 @@ gamePirateBay = object
       Vector2.make(-1, -1), true, onDeliveredFishReached)
     deliveredFish.deliverFish = function(data)
       local fishState = this.actualExpected
-      if fishState.changeBy(data) then
-        Fengine.getInstance().eventManager.triggerEvent("fishDelivered", -data)
+      if fishState.changeBy(data.amount) then
+        Fengine.getInstance().eventManager.triggerEvent("fishDelivered", object
+          amount = -data.amount
+          boat = data.boat
+        end)
       end
     end
   end
