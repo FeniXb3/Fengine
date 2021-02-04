@@ -5,4 +5,19 @@ Touchable = class extends BaseEntity
     this.onHold = onHold
     this.onRelease = onRelease  
   end
+
+  setOnPress = function(onPress)
+    this.onPress = onPress
+    return this
+  end
+
+  setOnHold = function(onHold)
+    this.onHold = onHold
+    return this
+  end
+
+  setOnRelease = function(onRelease)
+    this.onRelease = onRelease
+    return this
+  end
 end

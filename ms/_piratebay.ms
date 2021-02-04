@@ -11,6 +11,7 @@ gamePirateBay = object
       .reactOn("reset", "press", gameplay.reset)
     engine.inputManager.remap("reset", "R")
     engine.inputManager.remap("reset", "ENTER")
+    engine.eventManager.addListener("reset", "reset", gameplay)
 
     screen.bounds = engine.getScreenBounds()
     prepareSea()
@@ -66,10 +67,23 @@ gamePirateBay = object
 
         local resetText = Fengine.getInstance().addGameObject("resetText")
         resetText.setPosition(Vector2.make(0, -25))
-        resetText.addText("Press R to restart.", 15, "white")
+        local content = " to restart."
+        if system.inputs.touch then
+          content = "Tap here"+content
+        elsif system.inputs.mouse then
+          content = "Click here"+content
+        elsif system.inputs.keyboard then
+          content = "Press R"+content
+        end
+
+        resetText.addText(content, 15, "skyblue")
           .withShadow()
           storage.set("level_number", 0)
-        end)
+        resetText.addTouchableOnRenderable()
+          .setOnPress(function()
+            Fengine.getInstance().eventManager.triggerEvent("reset")
+          end)
+      end)
     end
     engine.eventManager.addListener("lost", "onLost", fader)
 
@@ -112,10 +126,24 @@ gamePirateBay = object
         Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", 3)
         play("flag")
         triggerWin()
+
+        local content = " to continue."
+        if system.inputs.touch then
+          content = "Tap here"+content
+        elsif system.inputs.mouse then
+          content = "Click here"+content
+        elsif system.inputs.keyboard then
+          content = "Press R"+content
+        end
         local continueText = Fengine.getInstance().addGameObject("continueText")
         continueText.setPosition(Vector2.make(0, -25))
-        continueText.addText("Well done! Press ENTER to continue...", 15, "white")
+        continueText.addText(content, 15, "skyblue")
           .withShadow()
+
+        continueText.addTouchableOnRenderable()
+          .setOnPress(function()
+            Fengine.getInstance().eventManager.triggerEvent("reset")
+          end)
         local levelNumber = storage.get("level_number")
         storage.set("level_number", levelNumber+1)
       end)
