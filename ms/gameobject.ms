@@ -182,6 +182,12 @@ GameObject = class extends BaseEntity
     this.renderable.gameObject = this
     return this.renderable
   end
+
+  addRound = function(size)
+    this.renderable = new Round(size)
+    this.renderable.gameObject = this
+    return this.renderable
+  end
   
   update = function()
     onUpdate()

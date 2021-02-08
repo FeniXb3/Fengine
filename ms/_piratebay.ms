@@ -30,6 +30,8 @@ gamePirateBay = object
       boat.addChild(prepareCollectedFish("", Vector2.makeZero(), Vector2.makeZero(), i))
     end
 
+    prepareCallCircle()
+
     fader = engine.addGameObject("fader")
     fader.addRectangle().withFill("black")
     fader.setEnabled(false)
@@ -94,6 +96,25 @@ gamePirateBay = object
     local levelNumber = storage.get("level_number") + 1
     engine.addWinTextObject("You win level " + levelNumber+"!")
   end
+
+  prepareCallCircle = function()
+    local callCircle = engine.addGameObject("callCircle")
+    callCircle.addRound(new Vector2(100, 100))
+      .outlineWith("skyblue")
+      .withScale(Vector2.makeZero())
+
+    callCircle.onClick = function(data)
+      this.position.setTo(data)
+      Tweener.to(renderable, "getScale", "setScale", new Vector2(1, 1), 0.5)
+        .setOnFinished(function(theObject)
+          theObject.setScale(Vector2.makeZero())
+        end)
+        .setEase("easeInOutBounce")
+    end
+    engine.eventManager.addListener("goToBase", "onClick", callCircle)
+    engine.eventManager.addListener("goToSea", "onClick", callCircle)
+  end
+
 
   prepareSea = function()
     prepareStuff()
