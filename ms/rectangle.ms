@@ -1,4 +1,4 @@
-Rectngle = class extends Drawable
+Rectangle = class extends Drawable
   constructor = function(size=Vector2.make(screen.width, screen.height))
     this.fillColor = 0
     this.outlineColor = 0

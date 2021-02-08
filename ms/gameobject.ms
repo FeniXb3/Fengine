@@ -178,7 +178,7 @@ GameObject = class extends BaseEntity
   end
   
   addRectangle = function(size)
-    this.renderable = new Rectngle(size)
+    this.renderable = new Rectangle(size)
     this.renderable.gameObject = this
     return this.renderable
   end
