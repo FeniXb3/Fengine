@@ -113,6 +113,18 @@ gamePirateBay = object
     end
     engine.eventManager.addListener("goToBase", "onClick", callCircle)
     engine.eventManager.addListener("goToSea", "onClick", callCircle)
+
+    local splash = engine.addGameObject("splash")
+    splash.addAnimator("splash")
+      .addClip("splash")
+
+    splash.playOnSea = function(data)
+      this.position.setTo(data)
+      this.renderable.play("splash", 1, function()
+        playDefault()
+      end)
+    end
+    engine.eventManager.addListener("goToSea", "playOnSea", splash)
   end
 
 
