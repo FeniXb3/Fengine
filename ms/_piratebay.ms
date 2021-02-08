@@ -80,7 +80,7 @@ gamePirateBay = object
 
         resetText.addText(content, 15, "skyblue")
           .withShadow()
-          storage.set("level_number", 0)
+        //storage.set("level_number", 0)
         resetText.addTouchableOnRenderable()
           .setOnPress(function()
             Fengine.getInstance().eventManager.triggerEvent("reset")
