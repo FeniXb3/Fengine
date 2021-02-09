@@ -177,7 +177,7 @@ GameObject = class extends BaseEntity
     return this.renderable
   end
   
-  addRectangle = function(size)
+  addRectangle = function(size=Vector2.make(screen.width, screen.height))
     this.renderable = new Rectangle(size)
     this.renderable.gameObject = this
     return this.renderable

@@ -18,10 +18,10 @@ Rectangle = class extends Drawable
   
   draw = function(position, translation)
     if fillColor then
-      screen.fillRect(position.x, position.y, screen.width, screen.height, fillColor)
+      screen.fillRect(position.x, position.y, size.x, size.y, fillColor)
     end
     if outlineColor then
-      screen.drawRect(position.x, position.y, screen.width, screen.height, outlineColor)
+      screen.drawRect(position.x, position.y, size.x, size.y, outlineColor)
     end
   end
 end
