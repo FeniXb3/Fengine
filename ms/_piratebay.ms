@@ -47,6 +47,10 @@ gamePirateBay = object
       if step == 3 then
         startingValue += targetValue
         targetValue = startingValue - targetValue
+        this.addTouchableOnRenderable()
+          .setOnPress(function()
+            Fengine.getInstance().eventManager.triggerEvent("reset")
+          end)
       elsif step == 1 then
         onFinish = function()
           Fengine.getInstance().eventManager.triggerEvent("startWinningSequence", 2)
@@ -166,9 +170,9 @@ gamePirateBay = object
 
         local content = " to continue."
         if system.inputs.touch then
-          content = "Tap here"+content
+          content = "Tap anywhere"+content
         elsif system.inputs.mouse then
-          content = "Click here"+content
+          content = "Click anywhere"+content
         elsif system.inputs.keyboard then
           content = "Press R"+content
         end
