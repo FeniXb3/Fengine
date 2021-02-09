@@ -67,25 +67,25 @@ gamePirateBay = object
           lostText.addText("You lost!", 30, "white")
             .withShadow()
 
-        local resetText = Fengine.getInstance().addGameObject("resetText")
-        resetText.setPosition(Vector2.make(0, -25))
-        local content = " to restart."
-        if system.inputs.touch then
-          content = "Tap here"+content
-        elsif system.inputs.mouse then
-          content = "Click here"+content
-        elsif system.inputs.keyboard then
-          content = "Press R"+content
-        end
+          local resetText = Fengine.getInstance().addGameObject("resetText")
+          resetText.setPosition(Vector2.make(0, -25))
+          local content = " to restart."
+          if system.inputs.touch then
+            content = "Tap here"+content
+          elsif system.inputs.mouse then
+            content = "Click here"+content
+          elsif system.inputs.keyboard then
+            content = "Press R"+content
+          end
 
-        resetText.addText(content, 15, "skyblue")
-          .withShadow()
-        //storage.set("level_number", 0)
-        resetText.addTouchableOnRenderable()
-          .setOnPress(function()
-            Fengine.getInstance().eventManager.triggerEvent("reset")
-          end)
-      end)
+          resetText.addText(content, 15, "skyblue")
+            .withShadow()
+          //storage.set("level_number", 0)
+          resetText.addTouchableOnRenderable()
+            .setOnPress(function()
+              Fengine.getInstance().eventManager.triggerEvent("reset")
+            end)
+        end)
     end
     engine.eventManager.addListener("lost", "onLost", fader)
 
