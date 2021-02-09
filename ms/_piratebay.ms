@@ -104,7 +104,7 @@ gamePirateBay = object
       .withScale(Vector2.makeZero())
 
     callCircle.onClick = function(data)
-      this.position.setTo(data)
+      this.position.setTo(data.target)
       Tweener.to(renderable, "getScale", "setScale", new Vector2(1, 1), 0.5)
         .setOnFinished(function(theObject)
           theObject.setScale(Vector2.makeZero())
@@ -119,7 +119,7 @@ gamePirateBay = object
       .addClip("splash")
 
     splash.playOnSea = function(data)
-      this.position.setTo(data)
+      this.position.setTo(data.target)
       this.renderable.play("splash", 1, function()
         playDefault()
       end)
@@ -185,7 +185,10 @@ gamePirateBay = object
     engine.eventManager.addListener("startWinningSequence", "onWinningSequence", base)
 
     base.addTouchableOnRenderable(function()
-        Fengine.getInstance().eventManager.triggerEvent("goToBase", Vector2.make(touch.x, touch.y))
+        local data = object
+          target =  Vector2.make(touch.x, touch.y)
+        end
+        Fengine.getInstance().eventManager.triggerEvent("goToBase", data)
     end)
   end
 
@@ -255,15 +258,15 @@ gamePirateBay = object
     end
 
     local goToBase = function(data)
-      local distance = this.position.getDistanceTo(data)
+      local distance = this.position.getDistanceTo(data.target)
       local maxDistance = 80
 
       if distance <= maxDistance then
-        local rotationDuration = rotate(data)
+        local rotationDuration = rotate(data.target)
 
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
-        Tweener.to(this, "getPosition", "setPosition", data, duration)
+        Tweener.to(this, "getPosition", "setPosition", data.target, duration)
         .setEase("easeInOutCubic")
         .setOnFinished( function(target)
           target.renderable.play("__default__")
@@ -276,22 +279,25 @@ gamePirateBay = object
     end
 
     local goToSea = function(data)
-      local distance = this.position.getDistanceTo(data)
+      local distance = this.position.getDistanceTo(data.target)
       local maxDistance = 80
 
       if distance <= maxDistance then
-        local rotationDuration = rotate(data)
+        local rotationDuration = rotate(data.target)
 
         local maxDuration = 3
         local duration = maxDuration * (distance/maxDistance)
-        Tweener.to(this, "getPosition", "setPosition", data, duration)
+        this.eventData = data
+        Tweener.to(this, "getPosition", "setPosition", data.target, duration)
         .setEase("easeInOutCubic")
         .setOnFinished( function(target)
           target.renderable.play("__default__")
           Fengine.getInstance().eventManager.triggerEvent("checkForFish", object
             position = this.targetValue
             boat = this.theObject
+            eventData = this.theObject.eventData
           end)
+          this.theObject.eventData = 0
         end)
         .setDelay(rotationDuration)
       end
@@ -315,7 +321,13 @@ gamePirateBay = object
       this.position.setTo(Vector2.make(x, y))
     end
     stuff.addTouchableOnMap(function()
-        Fengine.getInstance().eventManager.triggerEvent("goToSea", Vector2.make(touch.x, touch.y))
+        local map = this.gameObject.renderable
+        local coords = map.getCoords(Vector2.make(touch.x, touch.y))
+        local data = object
+          target = Vector2.make(touch.x, touch.y)
+          coords = coords
+        end
+        Fengine.getInstance().eventManager.triggerEvent("goToSea", data)
     end)
 
     stuff.onCheckForFish = checkForFish
@@ -326,7 +338,7 @@ gamePirateBay = object
 
   checkForFish = function(data)
     local map = this.renderable
-    local coords = map.getCoords(data.position)
+    local coords = data.eventData.coords
     local tileName = map.get(coords)
     if tileName.startsWith("fish") then
       local stuffAmount = floor(tileName[tileName.length-1])
