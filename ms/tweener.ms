@@ -22,6 +22,12 @@ Tweener = class extends BaseEntity
     return tween
   end
 
+  stop = function(tweenName)
+    if tweens[tweenName] then
+      tweens[tweenName] = 0
+    end
+  end
+
   update = function()
     for t in tweens
       if tweens[t].finished then

@@ -258,6 +258,10 @@ gamePirateBay = object
     end
 
     local goToBase = function(data)
+      if this.blocked then
+        return
+      end
+
       local distance = this.position.getDistanceTo(data.target)
       local maxDistance = 80
 
@@ -279,6 +283,10 @@ gamePirateBay = object
     end
 
     local goToSea = function(data)
+      if this.blocked then
+        return
+      end
+
       local distance = this.position.getDistanceTo(data.target)
       local maxDistance = 80
 
@@ -302,6 +310,17 @@ gamePirateBay = object
         .setDelay(rotationDuration)
       end
     end
+
+    boat.disableMoving = function()
+      local moveTweenName = this.name + "_getPosition_setPosition"
+      Tweener.stop(moveTweenName)
+      this.renderable.playDefault()
+
+      this.blocked = true
+    end
+
+    engine.eventManager.addListener("startWinningSequence", "disableMoving", boat)
+    engine.eventManager.addListener("lost", "disableMoving", boat)
 
     boat.onGoToSea = goToSea
     boat.onGoToBase = goToBase
