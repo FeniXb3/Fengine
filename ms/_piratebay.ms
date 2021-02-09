@@ -62,7 +62,7 @@ gamePirateBay = object
       setEnabled(true)
       renderable.setAlpha(0)
       Tweener.to(renderable, "getAlpha", "setAlpha", 0.5, 1)
-        .setOnFinished(function()
+        .setOnFinished(function(theObject)
           local lostText = Fengine.getInstance().addGameObject("lostText")
           lostText.addText("You lost!", 30, "white")
             .withShadow()
@@ -71,9 +71,9 @@ gamePirateBay = object
           resetText.setPosition(Vector2.make(0, -25))
           local content = " to restart."
           if system.inputs.touch then
-            content = "Tap here"+content
+            content = "Tap anywhere"+content
           elsif system.inputs.mouse then
-            content = "Click here"+content
+            content = "Click anywhere"+content
           elsif system.inputs.keyboard then
             content = "Press R"+content
           end
@@ -82,6 +82,10 @@ gamePirateBay = object
             .withShadow()
           //storage.set("level_number", 0)
           resetText.addTouchableOnRenderable()
+            .setOnPress(function()
+              Fengine.getInstance().eventManager.triggerEvent("reset")
+            end)
+          theObject.gameObject.addTouchableOnRenderable()
             .setOnPress(function()
               Fengine.getInstance().eventManager.triggerEvent("reset")
             end)
