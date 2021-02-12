@@ -216,6 +216,21 @@ gamePirateBay = object
     boat.addRigidBody()
       .setMass(0)
 
+    local fishLimitText = Fengine.getInstance().addGameObject(boat.name+"_fishLimitText")
+    fishLimitText.position.setTo(Vector2.make(0, 25))
+    fishLimitText.baseText = "It's too much fish for me to collect now"
+    fishLimitText.addText(fishLimitText.baseText, 15, "white")
+            .withShadow()
+    boat.addChild(fishLimitText)
+    fishLimitText.enabled = false
+    fishLimitText.onFishLimit = function(data)
+      if this.parent == data.boat then
+        this.enabled = true
+        Tweener.to(this, "getEnabled", "setEnabled", false, 2)
+      end
+    end
+    Fengine.getInstance().eventManager.addListener("fishLimit", "onFishLimit", fishLimitText)
+
     boat.rotate = function(data)
       local targetAngle = position.getAngleTo(data)-90
       if targetAngle > 180 then
@@ -395,6 +410,13 @@ gamePirateBay = object
       if this.parent == data.boat then
         if fishState.changeBy(data.amount) then
           data.map.clearAt(data.coords)
+          local fishOnBoat = Fengine.getInstance().addGameObject("fishOnBoat")
+          fishOnBoat.addSprite("fish_"+data.amount)
+            .withScale(new Vector2(0.75, 0.75))
+          fishOnBoat.position.y += data.boat.children.length*2
+          data.boat.addChild(fishOnBoat)
+        else
+          Fengine.getInstance().eventManager.triggerEvent("fishLimit", object boat = data.boat end)
         end
       end
     end
@@ -403,6 +425,19 @@ gamePirateBay = object
       local fishState = this.actualExpected
       if this.parent == data.boat then
         fishState.changeBy(data.amount)
+        print(data.boat.children)
+        local toRemove = []
+        for child in data.boat.children
+          if child.name == "fishOnBoat" then
+            toRemove.push(child)
+          end
+        end
+        
+        for child in toRemove
+          child.parent = 0
+          data.boat.children.removeElement(child)
+          Fengine.getInstance().gameObjects.removeElement(child)
+        end
       end
     end
 
@@ -414,7 +449,8 @@ gamePirateBay = object
     collectedFish.onFishDelivered = onFishDelivered
     engine.eventManager.addListener("passFish", "passFish", collectedFish)
     engine.eventManager.addListener("fishDelivered", "onFishDelivered", collectedFish)
-
+    
+    collectedFish.enabled = false
     return collectedFish
   end
 

@@ -19,6 +19,10 @@ GameObject = class extends BaseEntity
     position.setTo(value)
   end
 
+  getEnabled = function()
+    return this.enabled
+  end
+
   setEnabled = function(value)
     this.enabled = value
   end
